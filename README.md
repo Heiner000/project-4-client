@@ -29,7 +29,6 @@
 | POST | /trades | CREATE | Execute a trade |
 | GET | /assets/search/<ticker> | READ | Search for a stock or crypto |
 | GET | /assets/prices/<ticker> | READ | Get the real-time price of an asset |
-|   
 | GET | /users | READ | Retrieve a list of all users |
 | POST | /users/<username>/friends | CREATE | Send a friend request |
 | PUT | /users/<username>/friends | UPDATE | Accept a friend request |
