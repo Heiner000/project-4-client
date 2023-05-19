@@ -1,70 +1,113 @@
-# Getting Started with Create React App
+# App Title
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Summary 
+* This is a simulation trading app for both stocks and cryptocurrencies, targeted towards mobile users. It allows users to register, view near real-time market data, manage a virtual portfolio, execute trades, and gain an understanding and experience without any real-world financial risk.
 
-## Available Scripts
+## Team Members
+* Brian Rogers
+* Garrett Heiner
 
-In the project directory, you can run:
+## Technologies we plan on using
+* Backend: python, django, postresql
+* Frontend: React, javascript
+* Beautiful Soup -> this will be used for our DIY API. Scraping the stock prices off of MarketWatch will give us real time data for the user.
+* TradingView Plugin -> this allows us to show historical graph data to the user of a specific stock without us having to 
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
+## RESTful Routing Chart
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+| HTTP Verb | URL Pattern | CRUD Action | Description |
+| --- | --- | --- | --- |
+| POST | /register | CREATE | Register a new user |
+| POST | /login | READ | Log in an existing user |
+| GET | /logout | READ | Log out the current user |
+| GET | /portfolio | READ | Show the current user's portfolio |
+| POST | /portfolio/<ticker> | CREATE | Add a new asset to the portfolio |
+| PUT | /portfolio/<ticker> | UPDATE | Update an asset in the portfolio |
+| DELETE | /portfolio/<ticker> | DELETE | Remove an asset from the portfolio |
+| POST | /trades | CREATE | Execute a trade |
+| GET | /assets/search/<ticker> | READ | Search for a stock or crypto |
+| GET | /assets/prices/<ticker> | READ | Get the real-time price of an asset |
+|   
+| GET | /users | READ | Retrieve a list of all users |
+| POST | /users/<username>/friends | CREATE | Send a friend request |
+| PUT | /users/<username>/friends | UPDATE | Accept a friend request |
+| DELETE | /users/<username>/friends | DELETE | Remove a friend |
+| GET | /users/<username>/portfolio | READ | View a friend's portfolio |
+| GET | /users/<username>/trades | READ | View a friend's trades |
+---
+## ERD
+![erd](https://i.imgur.com/EgMCLCL.png)
+---
+## Wireframe
+![wireframes 1](https://i.imgur.com/DUkbvG8.png)
+![wireframes 2](https://i.imgur.com/aKM8qo5.png)
 
-### `npm test`
+## User Stories 
+* As a user, I want to register an account to keep track of my simulated portfolio
+* As a user, I want to log into and out of my account & see my portfolio
+* As a user, I want to search for stocks & cryptocurrencies by ticker
+* As a user, I want to see near real-time prices of various stocks and cryptocurrencies
+* As a user, I want to execute simulated buy/sell trades
+* As a user, I want to see historical data and charts for stocks and crypto
+* As a user, I want to friend users and see their trades/portfolios
+* As a user, I want to view other users' profiles so that I can easily view all of *their* previous posts.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## MVP
 
-### `npm run build`
+* User needs to be able to see accurate and up to date stock prices and history.
+* The user should be able to search for a specific stock to get more details for it.
+* The ability to purcase a stock and also have the trade value go up and down with the market is a must.
+* The user should also be able to purchase the same stock multiple times and at different values. (weekly buyers)
+* User needs to be able to sell the stock and have the gains or losses update to their total funds.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Stretches
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+* The ability to follow your friends and see what their investing in.
+* Implement Pandas, Matplotlib and dateutil.parse to create graphs from the historical data and not rely on the plugin. (the plugin limits our design options)
+* let the user create their own algorithim for automatic buying and selling.
+* The user can save and name the algorithim and apply it other stocks.
+* have a 'real world' mode where users can leave the sand box and buy and sell.
+* Make a desktop version.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Potential Roadblocks
 
-### `npm run eject`
+* Calling the api to update the value of the stocks can be difficult especially when someone decides to sell multiple stocks for the same company but all at different values. It needs to be accurate.
+* We want to have 'tickets' that will have the effect of covering the old window with the new buying or selling ticket. This could be a css obstacle.
+* Working with react native is new, so we predict running into roadblocks there.
+* If we hit our stretch goals than having the user create their own algorithims can prove difficult since they are creating conditions that will need to be turned into function in the program. 
+* Not a roadblock but maybe a worry is if MarketWatch changes it's html page, we will need to update our application.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Daily Sprints
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+**Friday**:
+- Finalize project planning/approval
+- Set up Django/PostgreSQL environment
+- Begin user registration/login
+- Continue web scraper for stocks
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+**Saturday**:
+- Set up data models and relationships
+- Finish the web scraper for stocks
+- Test and validate stock data
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+**Sunday**:
+- Double check data from scraper
+- Connect frontend to backend
 
-## Learn More
+**Monday**:
+- Add functionality for trades
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+**Tuesday**:
+- Add functionality for portfolio tracking
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+**Wednesday**:
+- Implement plugins
+- Deployment?
 
-### Code Splitting
+**Thursday**:
+- Bug fixes & testing
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+**Friday**:
+- Present App
