@@ -1,4 +1,4 @@
-# App Title
+# SimuStock
 
 ## Summary 
 * This is a simulation trading app for both stocks and cryptocurrencies, targeted towards mobile users. It allows users to register, view near real-time market data, manage a virtual portfolio, execute trades, and gain an understanding and experience without any real-world financial risk.
