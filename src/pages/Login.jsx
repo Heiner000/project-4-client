@@ -3,19 +3,17 @@ import axios from 'axios'
 import './styles/login.css'
 
 
-export default function Login(){
+export default function Login() {
 
     const [login, setLogin] = useState(false)
     const [signup, setSignup] = useState(false)
     const [username, setUsername] = useState('')
     const [userEmail, setUserEmail] = useState('')
     const [userPassword, setUserPassword] = useState('')
+    const [zipCode, setZipCode] = useState('')
     const [error, setError] = useState('')
     const loginButton = document.querySelector('.login-btn')
     const signupButton = document.querySelector('.signup-btn')
-
-
-
 
 
     // SIGNUP FUNCTION
@@ -23,42 +21,48 @@ export default function Login(){
         e.preventDefault()
         const payload = {
             username,
-            userPassword,
+            password: userPassword,
+            zip_code: zipCode,
         }
         try {
             // send payload ---> POST in the user model
-                // INCOMPLETE
-            const response = await axios.post('/api/login/', payload)
-        } catch(err){
-            console.log(err)
+            const response = await axios.post('http://localhost:8000/register/', payload)
+            if (response.status === 201) {
+                // will receive token from backend -- not set up for jwt
+                // localStorage.setItem('jwt', response.data.token)
+                setSignup(false)
+                setLogin(true)
+            } else {
+                console.warn('Undable to register')
+            }
+        } catch (err) {
+            console.log("Sign Up error occurred: ", err)
         }
+        console.log(payload)
     }
-
-
 
 
     // LOGIN FUNCTION
     const handleLogin = async (e) => {
         e.preventDefault()
         const data = {
-            userEmail,
-            userPassword
+            username,
+            password: userPassword
         }
-        try{
-                //INCOMPLETE
-            const response = await axios.post('api/login/',data)
-            if(response.data.status === 'success'){
-                // Will receive a token from backend
-                    // INCOMPLETE
-                localStorage.setItem('jwt',response.data.token)
+        try {
+            const response = await axios.post('http://localhost:8000/login/', data)
+            if (response.status === 200) {
+                // Will receive a token from backend (not set up for that)
+                // localStorage.setItem('jwt',response.data.token)
+                setLogin(true)
             } else {
                 setError('Invalid username or password.')
             }
         } catch (err) {
             setError('An error occured. Please try again.')
         }
+        console.log(data)
     }
-
 
 
     // RENDERS LOGIN/SIGNUP FORMS
@@ -74,7 +78,7 @@ export default function Login(){
 
 
 
-    return(
+    return (
         <div className='main-landing'>
             <div className='title'>
                 <h1>SimuStock</h1>
@@ -86,46 +90,45 @@ export default function Login(){
                 <button className='signup-btn' onClick={() => signupClick()}>Sign Up</button>
             </div>
 
-            { signup ? 
+            {signup ?
 
-                    // SIGNUP FORM
-                    <form onSubmit={handleSignup} className='form-container'>
+                // SIGNUP FORM
+                <form onSubmit={handleSignup} className='form-container'>
 
-                        <label>Name</label>
-                            <input type='text' name='username' 
-                            onChange={(e) => setUsername(e.target.value)} placeholder='name'></input>
+                    <label>Username</label>
+                    <input type='text' name='username'
+                        onChange={(e) => setUsername(e.target.value)} placeholder='Username'></input>
 
-                        <label>Email</label>
-                            <input type='email' name='email'
-                            onChange={(e) => setUserEmail(e.target.value)}
-                            placeholder='email'></input>
+                    <label>Password</label>
+                    <input type='password' name='password'
+                        onChange={(e) => setUserPassword(e.target.value)}
+                        placeholder='Password'></input>
 
-                        <label>Password</label>
-                            <input type='password' name='password'
-                            onChange={(e) => setUserPassword(e.target.value)}
-                            placeholder='pasword'></input>
+                    <label>Zip Code</label>
+                    <input type='text' name='zipCode'
+                        onChange={(e) => setZipCode(e.target.value)} placeholder='Zip Code'></input>
 
-                        <input className='btn' type="submit" value="Signup" />
+                    <input className='btn' type="submit" value="Signup" />
 
-                    </form>
-                
+                </form>
+
                 :
-                    // LOGIN FORM
-                    <form onSubmit={handleLogin} className='form-container'>
+                // LOGIN FORM
+                <form onSubmit={handleLogin} className='form-container'>
 
-                        <label>Email</label>
-                            <input type='text' value={userEmail}
-                            onChange={(e) => setUserEmail(e.target.value)}
-                            placeholder='email'></input>
+                    <label>Username</label>
+                    <input type='text' value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        placeholder='username'></input>
 
-                        <label>Password</label>
-                            <input type='password' value={userPassword}
-                            onChange={(e) => setUserPassword(e.target.value)}
-                            placeholder='pasword'></input>
+                    <label>Password</label>
+                    <input type='password' value={userPassword}
+                        onChange={(e) => setUserPassword(e.target.value)}
+                        placeholder='password'></input>
 
-                        <input className='btn' type="submit" value='Login' />
+                    <input className='btn' type="submit" value='Login' />
 
-                    </form>  
+                </form>
             }
         </div>
     )
