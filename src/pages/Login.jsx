@@ -5,24 +5,30 @@ export default function Login(){
 
     const [login, setLogin] = useState(false)
     const [signup, setSignup] = useState(false)
+    const loginButton = document.querySelector('.login-btn')
+    const signupButton = document.querySelector('.signup-btn')
+
 
     const loginClick = () => {
         setLogin(true)
         setSignup(false)
-      }
+    }
     
-      const signupClick = () => {
+    const signupClick = () => {
         setSignup(true)
         setLogin(false)
-      }
+    }
 
     return(
         <div className='main-landing'>
-            <h1>SimuStock</h1>
+            <div className='title'>
+                <h1>SimuStock</h1>
+                <img className='logo' src="../../images/graph copy.png" alt="stock logo" />
+            </div>
 
             <div className='btn-div'>
-                <button onClick={() => loginClick()}>Log In</button>
-                <button onClick={() => signupClick()}>Sign Up</button>
+                <button className='login-btn' onClick={() => loginClick()}>Log In</button>
+                <button className='signup-btn' onClick={() => signupClick()}>Sign Up</button>
             </div>
 
             { signup ? 
