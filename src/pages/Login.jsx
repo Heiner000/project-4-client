@@ -28,8 +28,8 @@ export default function Login() {
             // send payload ---> POST in the user model
             const response = await axios.post('http://localhost:8000/register/', payload)
             if (response.status === 201) {
-                // will receive token from backend -- not set up for jwt
-                // localStorage.setItem('jwt', response.data.token)
+                localStorage.setItem('access', response.data.access)
+                localStorage.setItem('refresh', response.data.refresh)
                 setSignup(false)
                 setLogin(true)
             } else {
@@ -52,8 +52,8 @@ export default function Login() {
         try {
             const response = await axios.post('http://localhost:8000/login/', data)
             if (response.status === 200) {
-                // Will receive a token from backend (not set up for that)
-                // localStorage.setItem('jwt',response.data.token)
+                localStorage.setItem('access', response.data.access)
+                localStorage.setItem('refresh', response.data.refresh)
                 setLogin(true)
             } else {
                 setError('Invalid username or password.')
@@ -75,7 +75,16 @@ export default function Login() {
         setLogin(false)
     }
 
-
+    // LOGOUT FUNCTION
+    const handleLogout = () => {
+        // Remove the tokens from local storage
+        localStorage.removeItem('access')
+        localStorage.removeItem('refresh')
+      
+        // Update state 
+        setLogin(false)
+      }
+      
 
 
     return (
