@@ -24,6 +24,11 @@ export default function Company({ ticker= 'aapl' }){
             <h2>current price: ${companyData.price}</h2>
 
             <div className='chart-div'>Chart plugin goes here</div>
+            
+            <div className="btn-div">
+                <button>BUY</button>
+                <button>SELL</button>
+            </div>
 
             <p className='key-data'>52 Week Range</p>
             <p>companyData.yearRange</p>
