@@ -13,7 +13,7 @@ export default function Company({ ticker = 'aapl' }) {
         const fetchCompanyData = async () => {
             try {
                 const response = await axios.get(`http://localhost:8000/assets/search/${ticker}/`)
-                setCompanyData({ name: response.data[0], price: response.data[1] })
+                setCompanyData({ name: response.data[0][0], price: response.data[0][1] })
                 console.log(response)
             } catch (err) {
                 console.log('Error fetching company data: ', err)
@@ -44,7 +44,9 @@ export default function Company({ ticker = 'aapl' }) {
                 <div className="modal">
                     <div onClick={() => setShowBuyModal(false)} className="overlay"></div>
                     <div className="modal-content">
-                        <BuyOrder closeModal={() => setShowBuyModal(false)} />
+                        <BuyOrder closeModal={() => setShowBuyModal(false)} 
+                        companyData={companyData}
+                        />
                     </div>
                 </div>
             ) : null}
