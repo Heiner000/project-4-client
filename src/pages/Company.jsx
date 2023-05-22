@@ -1,7 +1,7 @@
 import React, {useState, useEffect } from 'react'
 import axios from 'axios'
 
-export default function Company({ ticker }){
+export default function Company({ ticker= 'aapl' }){
     const [companyData, setCompanyData] = useState({ name: '', price: ''})
 
     useEffect(() => {
@@ -21,7 +21,18 @@ export default function Company({ ticker }){
         <div>
             <h1>{companyData.name}</h1>
             
-            <p>current price: {companyData.price}</p>
+            <h2>current price: ${companyData.price}</h2>
+
+            <div className='chart-div'>Chart plugin goes here</div>
+
+            <p className='key-data'>52 Week Range</p>
+            <p>companyData.yearRange</p>
+
+            <p className='key-data'>Day Range</p>
+            <p>companyData.dayRange</p>
+
+            <p className="key-data">Average Volume</p>
+            <p>companyData.avgVolume</p>
         </div>
     )
 }

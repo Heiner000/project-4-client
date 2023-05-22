@@ -44,6 +44,7 @@ export default function HomePage(){
             </select>
             {/* <button onClick={add this stock}>add +</button> */}
             {/* <p>{stocks}</p> */}
+            
         </div>
     )
 }
