@@ -32,6 +32,7 @@ export default function Login() {
                 localStorage.setItem('refresh', response.data.refresh)
                 setSignup(false)
                 setLogin(true)
+                window.location.href = '/homepage'
             } else {
                 console.warn('Undable to register')
             }
@@ -55,6 +56,7 @@ export default function Login() {
                 localStorage.setItem('access', response.data.access)
                 localStorage.setItem('refresh', response.data.refresh)
                 setLogin(true)
+                window.location.href = '/homepage'
             } else {
                 setError('Invalid username or password.')
             }
