@@ -110,3 +110,6 @@
 
 **Friday**:
 - Present App
+
+### Sources
+Modal: https://github.com/ecole-du-web/React-modal-yt
