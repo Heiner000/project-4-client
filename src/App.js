@@ -19,7 +19,7 @@ function App() {
           element={<Profile/>}
         />
         <Route 
-          path='/company'
+          path='/company/:ticker'
           element={<Company/>}
         />
         <Route 
