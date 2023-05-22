@@ -17,10 +17,32 @@ export default function HomePage(){
     //       })
     //   }, [])
 
-  // def displayStocks = () => {
-  //   // pull from the db. the stocks.
-  // }
+  const addStock = async () => {
+    const data = {
+      asset_type: 'stock',
+      ticker: 'aapl',
+      quantity: '5',
+      price: '81.25',
+      trade_type: 'buy'
+    }
+    // const jwt = localStorage.getItem('access');
+    // console.log(jwt)
+    // const headers = { 'Authorization': `Bearer ${jwt}` };
+    try {
+      const response = await axios.post('http://localhost:8000/trades/', data)
+      if (response.status === 201){
+        console.log("Trade created successfully")
+      } else {
+        console.log("Unable to create trade")
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
+  const displayStocks = async () => {
+    axios.get(`http://localhost:8000/portfolio/`)
+  }
 
     return(
         <div>
@@ -42,7 +64,7 @@ export default function HomePage(){
               <option value="v">Visa - V</option>
               <option value="ma">Mastercard - MA</option>
             </select>
-            {/* <button onClick={add this stock}>add +</button> */}
+            <button onClick={addStock}>add +</button>
             {/* <p>{stocks}</p> */}
             
         </div>
