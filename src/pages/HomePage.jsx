@@ -1,21 +1,9 @@
-import { dblClick } from '@testing-library/user-event/dist/click'
 import axios from 'axios'
 import { useState,useEffect } from 'react'
 
 export default function HomePage(){
 
-    const [stocks, setStocks] = useState()
-
-    // useEffect(() => {
-    //     const ticker = 'amzn'
-    //     axios.get(`http://localhost:8000/api/scrape/${ticker}/`)
-    //       .then(response => {
-    //         setStocks(response.data)
-    //       })
-    //       .catch((err) => {
-    //         console.log(err)
-    //       })
-    //   }, [])
+  const [stocks, setStocks] = useState()
 
   const addStock = async () => {
     const data = {
@@ -25,9 +13,6 @@ export default function HomePage(){
       price: '81.25',
       trade_type: 'buy'
     }
-    // const jwt = localStorage.getItem('access');
-    // console.log(jwt)
-    // const headers = { 'Authorization': `Bearer ${jwt}` };
     try {
       const response = await axios.post('http://localhost:8000/trades/', data)
       if (response.status === 201){
@@ -48,7 +33,6 @@ export default function HomePage(){
         <div>
             <h1>Hi, Brian</h1>
             <h2>portfolio</h2>
-            {/* {displayStocks} */}
             <p>add stock</p>
             <select name="" id="">
               <option value="aapl">Apple - aapl</option>
@@ -65,8 +49,6 @@ export default function HomePage(){
               <option value="ma">Mastercard - MA</option>
             </select>
             <button onClick={addStock}>add +</button>
-            {/* <p>{stocks}</p> */}
-            
         </div>
     )
 }
