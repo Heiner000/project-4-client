@@ -46,6 +46,34 @@
     color: #0066cc;
     margin: 3px;
 }
+.user-funds {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid white;
+    padding-bottom: 5px;
+}
+.user-funds h2 {
+    margin: 0;
+}
+.user-funds p {
+    margin: 0;
+    padding-left: 5px;
+    font-size: 25px;
+    font-weight: bold;
+}
+.logo-container {
+    margin-left: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.profile-logo {
+    height: 25px;
+    width: 25px;
+    padding: 14px;
+    margin-left: auto;
+}
 p {
     color: #0066cc;
 }
