@@ -22,8 +22,9 @@ export default function BuyOrder(props) {
     return (
         <div>
             <h1>BUY ORDER</h1>
+            <h2>{props.companyData.name}</h2>
 
-            <h2>Price per share:</h2>
+            <h3>Price per share:</h3>
             <p>{props.companyData.price}</p>
 
             <p>How many shares?</p>
@@ -45,9 +46,9 @@ export default function BuyOrder(props) {
             <h4>Funds Available:</h4>
             <p>$ 10,000</p>
 
-            <div className="">
-                <button>BUY NOW</button>
-                <button onClick={() => props.closeModal()}>Cancel</button>
+            <div className="btn-div">
+                <button className='btn-modal'>BUY NOW</button>
+                <button className='btn-modal' onClick={() => props.closeModal()}>Cancel</button>
             </div>
 
         </div>

@@ -26,6 +26,7 @@ export default function SellOrder(props){
     return(
         <div>
             <h1>SELL ORDER</h1>
+            <h2>{props.companyData.name}</h2>
 
             <h2>Price per share:</h2>
             <p>{props.companyData.price}</p>
@@ -49,8 +50,8 @@ export default function SellOrder(props){
             <h4>Funds After Sale:</h4>
             <p>$$$ + {calculateTotalPrice()}</p>
 
-            <div className="">
-                <button>SELL NOW</button>
+            <div className="btn-div">
+                <button className='btn-modal'>SELL NOW</button>
                 <button onClick={() => props.closeModal()}>Cancel</button>
             </div>
 

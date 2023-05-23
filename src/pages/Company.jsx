@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import { useParams } from 'react-router-dom'
 import BuyOrder from './components/BuyOrder'
 import SellOrder from './components/SellOrder'
 import './styles/Modal.css'
+import './styles/company.css'
 import API from '../API'
 
-export default function Company({ ticker = 'aapl' }) {
+export default function Company() {
+    const { ticker } = useParams()
     const [companyData, setCompanyData] = useState({ name: '', price: '' })
+    const [marketData, setMarketData] = useState([])
     const [showBuyModal, setShowBuyModal] = useState(false)
     const [showSellModal, setShowSellModal] = useState(false)
 
@@ -15,7 +18,10 @@ export default function Company({ ticker = 'aapl' }) {
             try {
                 const response = await API.get(`assets/search/${ticker}/`)
                 setCompanyData({ name: response.data[0][0], price: response.data[0][1] })
-                console.log(response)
+                console.log(companyData)
+                setMarketData(response.data[1])
+                console.log(marketData)
+
             } catch (err) {
                 console.log('Error fetching company data: ', err)
             }
@@ -32,21 +38,21 @@ export default function Company({ ticker = 'aapl' }) {
     return (
         <div>
             <h1>{companyData.name}</h1>
-            <h2>current price: ${companyData.price}</h2>
+            <h2>${companyData.price}</h2>
 
             <div className='chart-div'>Chart plugin goes here</div>
 
             <div className="btn-div">
-                <button className='btn-modal' onClick={() => setShowBuyModal(true)}>BUY</button>
-                <button className='btn-modal' onClick={() => setShowSellModal(true)}>SELL</button>
+                <button className='btn-modal buy-btn' onClick={() => setShowBuyModal(true)}>BUY</button>
+                <button className='btn-modal sell-btn' onClick={() => setShowSellModal(true)}>SELL</button>
             </div>
 
             {showBuyModal ? (
                 <div className="modal">
                     <div className="overlay"></div>
                     <div className="modal-content">
-                        <BuyOrder closeModal={() => setShowBuyModal(false)} 
-                        companyData={companyData}
+                        <BuyOrder closeModal={() => setShowBuyModal(false)}
+                            companyData={companyData}
                         />
                     </div>
                 </div>
@@ -55,20 +61,33 @@ export default function Company({ ticker = 'aapl' }) {
                 <div className="modal">
                     <div className="overlay"><div className="modal-content">
                         <SellOrder closeModal={() => setShowSellModal(false)}
-                        companyData={companyData} />
+                            companyData={companyData} />
                     </div>
                     </div>
                 </div>
             ) : null}
 
-            <p className='key-data'>52 Week Range</p>
-            <p>companyData.yearRange</p>
+            <p className='key-data-label'>Day Range</p>
+            <hr/>
+            <p>{marketData[1]['Day Range']}</p>
 
-            <p className='key-data'>Day Range</p>
-            <p>companyData.dayRange</p>
+            <p className='key-data-label'>52 Week Range</p>
+            <hr/>
+            <p>{marketData[2]['52 Week Range']}</p>
 
-            <p className="key-data">Average Volume</p>
-            <p>companyData.avgVolume</p>
+            <p className="key-data-label">Market Cap</p>
+            <hr/>
+            <p>{marketData[3]['Market Cap']}</p>
+            
+            <p className="key-data-label">Public Float</p>
+            <hr/>
+            <p>{marketData[5]['Public Float']}</p>
+
+            <p className="key-data-label">Average Volume</p>
+            <hr/>
+            <p>{marketData[15]['Average Volume']}</p>
+
+            <a href={`https://www.marketwatch.com/investing/stock/${ticker}`} target='_blank'>More data...</a>
         </div>
     )
 }

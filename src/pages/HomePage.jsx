@@ -57,7 +57,7 @@ export default function HomePage(){
 
 
   useEffect(() => {
-    const user_id = 3
+    const user_id = 2
     const getWatchlist = async () => {
       try{
         const response = await API.get('get_watchlist/', {params: {user_id: user_id}})
@@ -88,7 +88,7 @@ export default function HomePage(){
       return;
   }
     const data = {
-      user_id: 3, // this will change accordignly to the logged in user
+      user_id: 2, // this will change accordignly to the logged in user
       new_stock: selectedStock.value
     }
     try {
@@ -110,7 +110,7 @@ export default function HomePage(){
 
   const getWatchlist = async () => {
     try{
-      const response = await API.get('get_watchlist/', {params: {user_id: 3}})
+      const response = await API.get('get_watchlist/', {params: {user_id: 2}})
       setWatchlist(response.data)
     }catch(err){
       console.log(err)
@@ -125,7 +125,7 @@ export default function HomePage(){
   //     quantity: 5,
   //     price: 81.25,
   //     trade_type: 'buy',
-  //     user_id: 3
+  //     user_id: 2
   //   }
   //   try {
   //     const response = await axios.post('http://localhost:8000/trades/', data)
@@ -187,7 +187,7 @@ export default function HomePage(){
 
     return(
         <div className='container'>
-            <h1>Hi, Brian</h1>
+            <h1>Hi, USER</h1>
             <div className='outer-portfolio'>
             <h2>Portfolio</h2>
               <div className='portfolio-container'>
