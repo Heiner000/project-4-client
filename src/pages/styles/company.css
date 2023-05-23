@@ -4,26 +4,54 @@
     justify-content: center;
     align-items: center;
 }
+
 .container small {
     color: white;
 }
-.btn-div {
+
+.heading * {
+    margin: 0;
+}
+
+.company-btn-div {
     display: flex;
     justify-content: center;
 }
-.buy-btn {
-    border: green;
+.company-btn-div button{
+    margin: 10px;
+    height: 55px;
+    width: 30%;
+    font-size: 20px;
 }
+
+.buy-btn {
+    background-color: #0066cc;
+    border: 2px solid lime;
+    color: white;
+    border-radius: 7%;
+}
+
+.sell-btn {
+    background-color: #0066cc;
+    border: 2px solid crimson;
+    color: white;
+    border-radius: 7%;
+}
+
 .key-data-label {
     color: white;
+    margin-bottom: 0px;
 }
+
 p {
     color: #0066cc;
 }
+
 h2 {
     color: white;
     margin-left: 0;
 }
+
 h1 {
     color: #0066cc;
     text-align: center;

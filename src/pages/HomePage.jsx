@@ -215,6 +215,7 @@ export default function HomePage(){
               <h2>Funds:</h2>
               <p>${userFunds}</p>
             </div>
+
             <div className='outer-portfolio'>
             <h2>Portfolio</h2>
               <div className='portfolio-container'>
