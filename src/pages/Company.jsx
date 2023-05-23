@@ -50,7 +50,7 @@ export default function Company() {
 
             <div className='chart-div'>Chart plugin goes here</div>
 
-            <div className="btn-div">
+            <div className="company-btn-div">
                 <button className='btn-modal buy-btn' onClick={() => setShowBuyModal(true)}>BUY</button>
                 <button className='btn-modal sell-btn' onClick={() => setShowSellModal(true)}>SELL</button>
             </div>
