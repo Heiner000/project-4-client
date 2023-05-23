@@ -10,9 +10,10 @@ export default function HomePage(){
     const data = {
       asset_type: 'stock',
       ticker: 'aapl',
-      quantity: '5',
-      price: '81.25',
-      trade_type: 'buy'
+      quantity: 5,
+      price: 81.25,
+      trade_type: 'buy',
+      user_id: 3
     }
     try {
       const response = await axios.post('http://localhost:8000/trades/', data)
@@ -25,6 +26,8 @@ export default function HomePage(){
       console.log(err)
     }
   }
+
+
   useEffect( () => {
     const fetchStocks = async () => {
       try{
