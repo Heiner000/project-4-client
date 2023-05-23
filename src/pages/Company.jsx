@@ -3,6 +3,7 @@ import axios from 'axios'
 import BuyOrder from './components/BuyOrder'
 import SellOrder from './components/SellOrder'
 import './styles/Modal.css'
+import API from '../API'
 
 export default function Company({ ticker = 'aapl' }) {
     const [companyData, setCompanyData] = useState({ name: '', price: '' })
@@ -12,7 +13,7 @@ export default function Company({ ticker = 'aapl' }) {
     useEffect(() => {
         const fetchCompanyData = async () => {
             try {
-                const response = await axios.get(`http://localhost:8000/assets/search/${ticker}/`)
+                const response = await API.get(`assets/search/${ticker}/`)
                 setCompanyData({ name: response.data[0][0], price: response.data[0][1] })
                 console.log(response)
             } catch (err) {
