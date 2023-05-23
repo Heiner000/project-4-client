@@ -84,7 +84,7 @@ export default function SellOrder(props) {
 
             <div className="btn-div">
                 <button className='btn-modal' onClick={createSellTrade}>SELL NOW</button>
-                <button onClick={() => props.closeModal()}>Cancel</button>
+                <button className='btn-modal' onClick={() => props.closeModal()}>Cancel</button>
             </div>
 
         </div>
