@@ -3,6 +3,9 @@ import ReactSelect from 'react-select'
 import { useState, useEffect } from 'react'
 import API from '../API'
 import './styles/homepage.css'
+import jwtDecode from 'jwt-decode'
+import { UserContext } from '../App'
+import React, { useContext } from 'react'
 
 export default function HomePage(){
 
@@ -51,13 +54,16 @@ export default function HomePage(){
     { value: 'abt', label: 'Abbott Laboratories - ABT' },
     { value: 'crm', label: 'Salesforce - CRM' },
   ];
+  // const token = localStorage.getItem('access')
+  // const decodedToken = jwtDecode(token)  
+  // const userId = decodedToken.user_id
   
-
-
+  const userId = useContext(UserContext)
+  console.log(userId)
 
 
   useEffect(() => {
-    const user_id = 2
+    const user_id = 3
     const getWatchlist = async () => {
       try{
         const response = await API.get('get_watchlist/', {params: {user_id: user_id}})
@@ -88,7 +94,7 @@ export default function HomePage(){
       return;
   }
     const data = {
-      user_id: 2, // this will change accordignly to the logged in user
+      user_id: 3, // this will change accordignly to the logged in user
       new_stock: selectedStock.value
     }
     try {
@@ -110,7 +116,7 @@ export default function HomePage(){
 
   const getWatchlist = async () => {
     try{
-      const response = await API.get('get_watchlist/', {params: {user_id: 2}})
+      const response = await API.get('get_watchlist/', {params: {user_id: 3}})
       setWatchlist(response.data)
     }catch(err){
       console.log(err)
