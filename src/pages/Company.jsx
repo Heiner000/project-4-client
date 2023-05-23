@@ -27,12 +27,16 @@ export default function Company() {
             }
         }
         fetchCompanyData()
-    }, [ticker])
+    }, [])
 
     if (showBuyModal || showSellModal) {
         document.body.classList.add('active-modal')
     } else {
         document.body.classList.remove('active-modal')
+    }
+
+    if (!marketData.length) {
+        return <p>Loading...</p>
     }
 
     return (
@@ -69,23 +73,23 @@ export default function Company() {
 
             <p className='key-data-label'>Day Range</p>
             <hr/>
-            {/* <p>{marketData[1]['Day Range']}</p> */}
+            <p>{marketData[1]['Day Range']}</p>
 
             <p className='key-data-label'>52 Week Range</p>
             <hr/>
-            {/* <p>{marketData[2]['52 Week Range']}</p> */}
+            <p>{marketData[2]['52 Week Range']}</p>
 
             <p className="key-data-label">Market Cap</p>
             <hr/>
-            {/* <p>{marketData[3]['Market Cap']}</p> */}
+            <p>{marketData[3]['Market Cap']}</p>
             
             <p className="key-data-label">Public Float</p>
             <hr/>
-            {/* <p>{marketData[5]['Public Float']}</p> */}
+            <p>{marketData[5]['Public Float']}</p>
 
             <p className="key-data-label">Average Volume</p>
             <hr/>
-            {/* <p>{marketData[15]['Average Volume']}</p> */}
+            <p>{marketData[15]['Average Volume']}</p>
 
             <a href={`https://www.marketwatch.com/investing/stock/${ticker}`} target='_blank'>More data...</a>
         </div>
