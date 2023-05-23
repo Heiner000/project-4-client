@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import API from '../../API'
 
 export default function BuyOrder(props) {
     const [quantity, setQuantity] = useState(0)
@@ -19,15 +20,39 @@ export default function BuyOrder(props) {
         return totalPrice.toFixed(2)
     }
 
+    const createBuyTrade = async () => {
+        try {
+            const tradeData = {
+                user_id: 2,// res.locals?
+                asset_type: 'stock',
+                ticker: props.companyData.name,
+                quantity: quantity,
+                price: parseFloat(props.companyData.price),
+                trade_type: 'BUY'
+            }
+            const response = await API.post('/trades', tradeData)
+            if (response.status === 201) {
+                console.log("Trade created successfully")
+            } else {
+                console.log("Error creating Trade")
+            }
+
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
     return (
         <div>
-            <h1>BUY ORDER</h1>
-            <h2>{props.companyData.name}</h2>
+            <div className="container">
+                <h1>BUY ORDER</h1>
+                <h2>{props.companyData.name}</h2>
+            </div>
 
-            <h3>Price per share:</h3>
+            <h3 className='key-data-label'>Price per share:</h3>
             <p>{props.companyData.price}</p>
 
-            <p>How many shares?</p>
+            <p className='key-data-label'>How many shares?</p>
             <div className="">
                 <button onClick={handleDecrement}>-</button>
                 <input
@@ -39,15 +64,15 @@ export default function BuyOrder(props) {
                 <button onClick={handleIncrement}>+</button>
             </div>
 
-            <h3>Total Cost:</h3>
+            <h3 className='key-data-label'>Total Cost:</h3>
             <p>{calculateTotalPrice()}</p>
 
             {/* need to pull funds available from user model */}
-            <h4>Funds Available:</h4>
+            <h4 className='key-data-label'>Funds Available:</h4>
             <p>$ 10,000</p>
 
             <div className="btn-div">
-                <button className='btn-modal'>BUY NOW</button>
+                <button className='btn-modal' onClick={createBuyTrade}>BUY NOW</button>
                 <button className='btn-modal' onClick={() => props.closeModal()}>Cancel</button>
             </div>
 
