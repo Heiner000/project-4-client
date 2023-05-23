@@ -4,13 +4,12 @@ import { useState, useEffect } from 'react'
 import API from '../API'
 import './styles/homepage.css'
 import jwtDecode from 'jwt-decode'
-import { UserContext } from '../App'
-import React, { useContext } from 'react'
 
 export default function HomePage(){
 
   const [selectedStock, setSelectedStock] = useState()
   const [watchlist, setWatchlist] = useState()
+  const [username, setUsername] = useState('User')
   const options = [
     { value: 'aapl', label: 'Apple - AAPL' },
     { value: 'msft', label: 'Microsoft - MSFT' },
@@ -54,19 +53,29 @@ export default function HomePage(){
     { value: 'abt', label: 'Abbott Laboratories - ABT' },
     { value: 'crm', label: 'Salesforce - CRM' },
   ];
-  // const token = localStorage.getItem('access')
-  // const decodedToken = jwtDecode(token)  
-  // const userId = decodedToken.user_id
   
-  const userId = useContext(UserContext)
-  console.log(userId)
-
+  const token = localStorage.getItem('access')
+  const decodedToken = jwtDecode(token)
+  const userId = decodedToken.user_id
 
   useEffect(() => {
-    const user_id = 3
+    const getUsername = async () => {
+      try{
+        const response = await API.get('user_info/', {params: {user_id: userId}})
+        console.log(response.data)
+      }catch(err){
+        console.log(err)
+      }
+    }
+    getUsername()
+  }, [])
+  
+
+  useEffect(() => {
+    // const user_id = 3
     const getWatchlist = async () => {
       try{
-        const response = await API.get('get_watchlist/', {params: {user_id: user_id}})
+        const response = await API.get('get_watchlist/', {params: {user_id: userId}})
         setWatchlist(response.data)
       }catch(err){
         console.log(err)
@@ -76,7 +85,7 @@ export default function HomePage(){
   }, [])
 
 
-  console.log(localStorage)
+  
 
 
   const handleChange = (selectedOption) => {
@@ -94,7 +103,7 @@ export default function HomePage(){
       return;
   }
     const data = {
-      user_id: 3, // this will change accordignly to the logged in user
+      user_id: userId, // this will change accordignly to the logged in user
       new_stock: selectedStock.value
     }
     try {
@@ -116,7 +125,7 @@ export default function HomePage(){
 
   const getWatchlist = async () => {
     try{
-      const response = await API.get('get_watchlist/', {params: {user_id: 3}})
+      const response = await API.get('get_watchlist/', {params: {user_id: userId}})
       setWatchlist(response.data)
     }catch(err){
       console.log(err)
