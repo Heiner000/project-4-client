@@ -1,7 +1,9 @@
 import { useState } from 'react'
+import { useParams } from 'react-router-dom'
 import API from '../../API'
 
 export default function BuyOrder(props) {
+    const { ticker } = useParams()
     const [quantity, setQuantity] = useState(0)
 
     const handleDecrement = () => {
@@ -25,16 +27,16 @@ export default function BuyOrder(props) {
             const tradeData = {
                 user_id: 2,// res.locals?
                 asset_type: 'stock',
-                ticker: props.companyData.name,
+                ticker: ticker,
                 quantity: quantity,
                 price: parseFloat(props.companyData.price),
                 trade_type: 'BUY'
             }
-            const response = await API.post('/trades', tradeData)
+            const response = await API.post('/trades/', tradeData)
             if (response.status === 201) {
-                console.log("Trade created successfully")
+                console.log("BUY created successfully")
             } else {
-                console.log("Error creating Trade")
+                console.log("Error creating BUY")
             }
 
         } catch (err) {
@@ -44,9 +46,10 @@ export default function BuyOrder(props) {
 
     return (
         <div>
-            <div className="container">
+            <div className="container heading">
                 <h1>BUY ORDER</h1>
                 <h2>{props.companyData.name}</h2>
+                <small>{ ticker }</small>
             </div>
 
             <h3 className='key-data-label'>Price per share:</h3>
@@ -71,7 +74,7 @@ export default function BuyOrder(props) {
             <h4 className='key-data-label'>Funds Available:</h4>
             <p>$ 10,000</p>
 
-            <div className="btn-div">
+            <div className="company-btn-div">
                 <button className='btn-modal' onClick={createBuyTrade}>BUY NOW</button>
                 <button className='btn-modal' onClick={() => props.closeModal()}>Cancel</button>
             </div>
