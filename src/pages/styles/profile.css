@@ -1,0 +1,10 @@
+.profile-page-logo {
+    height: 90px;
+    width: 90px;
+}
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
