@@ -53,6 +53,8 @@ export default function HomePage(){
   
 
 
+
+
   useEffect(() => {
     const user_id = 3
     const getWatchlist = async () => {
@@ -67,13 +69,23 @@ export default function HomePage(){
   }, [])
 
 
+
+
+
   const handleChange = (selectedOption) => {
     setSelectedStock(selectedOption);
   };
 
 
 
+
+
   const addStock = async () => {
+    const existingStock = watchlist.find(stock => stock === selectedStock.value);
+    if (existingStock) {
+      console.log("Stock already exists in the watchlist");
+      return;
+  }
     const data = {
       user_id: 3, // this will change accordignly to the logged in user
       new_stock: selectedStock.value
@@ -90,6 +102,10 @@ export default function HomePage(){
       console.log(err)
     }
   }
+
+
+
+
 
   const getWatchlist = async () => {
     try{
@@ -144,10 +160,14 @@ export default function HomePage(){
   //   }
   // }
 
+  const changeWindow = (ticker) => {
+    window.location.href = `company/${ticker}`
+  }
+
   const displayWatchlist = () => {
     return [...watchlist].reverse().map((ticker, i) => {
       return(
-        <div className='watch-stock'>
+        <div className='watch-stock' onClick={() => changeWindow(ticker)}>
           <p key={i}>{ticker}</p>
         </div>
       )
@@ -194,7 +214,8 @@ export default function HomePage(){
                     control: (provided) => ({
                       ...provided,
                       backgroundColor: 'transparent',
-                      border: '2px solid #0066cc'
+                      border: '2px solid #0066cc',
+                      color: 'white',
                     }),
                   }}
                   />
