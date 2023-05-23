@@ -1,6 +1,7 @@
 import axios from 'axios'
 import ReactSelect from 'react-select'
 import { useState, useEffect } from 'react'
+import API from '../API'
 import './styles/homepage.css'
 
 export default function HomePage(){
@@ -59,7 +60,7 @@ export default function HomePage(){
     const user_id = 3
     const getWatchlist = async () => {
       try{
-        const response = await axios.get('http://localhost:8000/get_watchlist/', {params: {user_id: user_id}})
+        const response = await API.get('get_watchlist/', {params: {user_id: user_id}})
         setWatchlist(response.data)
       }catch(err){
         console.log(err)
@@ -91,7 +92,7 @@ export default function HomePage(){
       new_stock: selectedStock.value
     }
     try {
-      const response = await axios.post('http://localhost:8000/watchlist/', data)
+      const response = await API.post('watchlist/', data)
       if (response.status === 201){
         console.log("Trade created successfully")
         getWatchlist()
@@ -109,7 +110,7 @@ export default function HomePage(){
 
   const getWatchlist = async () => {
     try{
-      const response = await axios.get('http://localhost:8000/get_watchlist/', {params: {user_id: 3}})
+      const response = await API.get('get_watchlist/', {params: {user_id: 3}})
       setWatchlist(response.data)
     }catch(err){
       console.log(err)
@@ -142,8 +143,8 @@ export default function HomePage(){
   useEffect( () => {
     const fetchStocks = async () => {
       try{
-        const response = await axios.get('http://localhost:8000/view_trades/')
-        console.log(response.data)
+        const response = await API.get('view_trades/')
+        console.log('all trades',response.data)
       } catch (err) {
         console.log(err)
       }
@@ -190,12 +191,7 @@ export default function HomePage(){
             <div className='outer-portfolio'>
             <h2>Portfolio</h2>
               <div className='portfolio-container'>
-                {/* <ReactSelect
-                  value={selectedStock}
-                  onChange={handleChange}
-                  options={options}
-                  />
-                <button onClick={addStock}>add +</button> */}
+                {/* users purchased stocks here */}
               </div>
             </div>
 
