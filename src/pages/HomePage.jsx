@@ -202,7 +202,7 @@ export default function HomePage(){
 
     return(
         <div className='container'>
-            <h1>Hi, USER</h1>
+            <h1>Hi, {username}</h1>
             <div className='outer-portfolio'>
             <h2>Portfolio</h2>
               <div className='portfolio-container'>

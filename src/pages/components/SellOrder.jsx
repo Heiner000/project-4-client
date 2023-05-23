@@ -1,12 +1,17 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import API from '../../API'
+import jwtDecode from 'jwt-decode'
 
 export default function SellOrder(props) {
     const { ticker } = useParams()
     const [quantity, setQuantity] = useState(1)
     // INCOMPLETE: Need to fetch user's shares
     const [userShares, setUserShares] = useState(0)
+
+    const token = localStorage.getItem('access')
+    const decodedToken = jwtDecode(token)
+    const userId = decodedToken.user_id
 
     const handleDecrement = () => {
         if (quantity > 1) {
@@ -29,14 +34,14 @@ export default function SellOrder(props) {
     const createSellTrade = async () => {
         try {
             const tradeData = {
-                user_id: 2,// res.locals?
+                user_id: userId,
                 asset_type: 'stock',
                 ticker: ticker,
                 quantity: quantity,
                 price: parseFloat(props.companyData.price),
                 trade_type: 'SELL'
             }
-            const response = await API.post('/trades/', tradeData)
+            const response = await API.post('trades/', tradeData)
             if (response.status === 201) {
                 console.log("Sale made successfully")
             } else {
@@ -49,7 +54,7 @@ export default function SellOrder(props) {
 
     return (
         <div>
-            <div className="container">
+            <div className="container heading">
                 <h1>SELL ORDER</h1>
                 <h2>{props.companyData.name}</h2>
                 <small>{ticker}</small>
@@ -59,7 +64,7 @@ export default function SellOrder(props) {
             <p>{props.companyData.price}</p>
 
             <p className='key-data-label'>How many shares?</p>
-            <div className="shares-div">
+            <div className="shares-input-div">
                 <button onClick={handleDecrement}>-</button>
                 <input
                     type="number"
@@ -78,7 +83,7 @@ export default function SellOrder(props) {
             <p>$$$ + {calculateTotalPrice()}</p>
 
             <div className="btn-div">
-                <button className='btn-modal'>SELL NOW</button>
+                <button className='btn-modal' onClick={createSellTrade}>SELL NOW</button>
                 <button onClick={() => props.closeModal()}>Cancel</button>
             </div>
 

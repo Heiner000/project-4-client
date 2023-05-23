@@ -1,10 +1,15 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import API from '../../API'
+import jwtDecode from 'jwt-decode'
 
 export default function BuyOrder(props) {
     const { ticker } = useParams()
     const [quantity, setQuantity] = useState(0)
+
+    const token = localStorage.getItem('access')
+    const decodedToken = jwtDecode(token)
+    const userId = decodedToken.user_id
 
     const handleDecrement = () => {
         if (quantity > 0) {
@@ -25,14 +30,14 @@ export default function BuyOrder(props) {
     const createBuyTrade = async () => {
         try {
             const tradeData = {
-                user_id: 2,// res.locals?
+                user_id: userId,
                 asset_type: 'stock',
                 ticker: ticker,
                 quantity: quantity,
                 price: parseFloat(props.companyData.price),
                 trade_type: 'BUY'
             }
-            const response = await API.post('/trades/', tradeData)
+            const response = await API.post('trades/', tradeData)
             if (response.status === 201) {
                 console.log("BUY created successfully")
             } else {
@@ -56,7 +61,7 @@ export default function BuyOrder(props) {
             <p>{props.companyData.price}</p>
 
             <p className='key-data-label'>How many shares?</p>
-            <div className="">
+            <div className="shares-input-div">
                 <button onClick={handleDecrement}>-</button>
                 <input
                     type="number"
