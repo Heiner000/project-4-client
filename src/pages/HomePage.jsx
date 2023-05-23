@@ -54,7 +54,7 @@ export default function HomePage(){
   
 
 
-
+  console.log(res.locals)
 
   useEffect(() => {
     const user_id = 2
