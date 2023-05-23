@@ -42,7 +42,7 @@ export default function Company({ ticker = 'aapl' }) {
 
             {showBuyModal ? (
                 <div className="modal">
-                    <div onClick={() => setShowBuyModal(false)} className="overlay"></div>
+                    <div className="overlay"></div>
                     <div className="modal-content">
                         <BuyOrder closeModal={() => setShowBuyModal(false)} 
                         companyData={companyData}
@@ -52,8 +52,9 @@ export default function Company({ ticker = 'aapl' }) {
             ) : null}
             {showSellModal ? (
                 <div className="modal">
-                    <div onClick={() => setShowSellModal(false)} className="overlay"><div className="modal-content">
-                        <SellOrder closeModal={() => setShowSellModal(false)} />
+                    <div className="overlay"><div className="modal-content">
+                        <SellOrder closeModal={() => setShowSellModal(false)}
+                        companyData={companyData} />
                     </div>
                     </div>
                 </div>
