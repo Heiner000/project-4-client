@@ -41,7 +41,11 @@ export default function Company() {
 
     return (
         <div>
-            <h1>{companyData.name}</h1>
+            <div className="container">
+                <h1>{companyData.name}</h1>
+                <small>{ticker.toUpperCase()}</small>
+            </div>
+
             <h2>${companyData.price}</h2>
 
             <div className='chart-div'>Chart plugin goes here</div>
@@ -72,23 +76,23 @@ export default function Company() {
             ) : null}
 
             <p className='key-data-label'>Day Range</p>
-            <hr/>
+            <hr />
             <p>{marketData[1]['Day Range']}</p>
 
             <p className='key-data-label'>52 Week Range</p>
-            <hr/>
+            <hr />
             <p>{marketData[2]['52 Week Range']}</p>
 
             <p className="key-data-label">Market Cap</p>
-            <hr/>
+            <hr />
             <p>{marketData[3]['Market Cap']}</p>
-            
+
             <p className="key-data-label">Public Float</p>
-            <hr/>
+            <hr />
             <p>{marketData[5]['Public Float']}</p>
 
             <p className="key-data-label">Average Volume</p>
-            <hr/>
+            <hr />
             <p>{marketData[15]['Average Volume']}</p>
 
             <a href={`https://www.marketwatch.com/investing/stock/${ticker}`} target='_blank'>More data...</a>
