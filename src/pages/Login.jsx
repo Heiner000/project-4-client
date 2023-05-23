@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import './styles/login.css'
+import API from '../API'
 
 
 export default function Login() {
@@ -19,51 +20,40 @@ export default function Login() {
     // SIGNUP FUNCTION
     const handleSignup = async (e) => {
         e.preventDefault()
-        const payload = {
-            username,
+        const user = {
+            username: username,
             password: userPassword,
             zip_code: zipCode,
         }
-        try {
-            // send payload ---> POST in the user model
-            const response = await axios.post('http://localhost:8000/register/', payload)
-            if (response.status === 201) {
-                localStorage.setItem('access', response.data.access)
-                localStorage.setItem('refresh', response.data.refresh)
-                setSignup(false)
-                setLogin(true)
-                window.location.href = '/homepage'
-            } else {
-                console.warn('Undable to register')
-            }
-        } catch (err) {
-            console.log("Sign Up error occurred: ", err)
-        }
-        console.log(payload)
+            const response = await API.post('register/', user)
+            console.log(response.data.access)
+            localStorage.clear()
+            localStorage.setItem('access', response.data.access)
+            localStorage.setItem('refresh', response.data.refresh)
+            console.log(localStorage)
+            window.location.href = '/homepage'
+            
     }
 
 
     // LOGIN FUNCTION
     const handleLogin = async (e) => {
         e.preventDefault()
-        const data = {
-            username,
+        const user = {
+            username: username,
             password: userPassword
         }
-        try {
-            const response = await axios.post('http://localhost:8000/login/', data)
-            if (response.status === 200) {
-                localStorage.setItem('access', response.data.access)
-                localStorage.setItem('refresh', response.data.refresh)
-                setLogin(true)
-                window.location.href = '/homepage'
-            } else {
-                setError('Invalid username or password.')
-            }
-        } catch (err) {
-            setError('An error occured. Please try again.')
-        }
+        const {data} = await API.post('token/', user,
+        {
+            headers: {'Content-Type': 'application/json'}
+        })
         console.log(data)
+        localStorage.clear()
+        localStorage.setItem('access', data.access)
+        localStorage.setItem('refresh', data.refresh)
+        axios.defaults.headers.common['Authorization'] = `Bearer ${data['access']}`
+        window.location.href = '/homepage'
+        
     }
 
 

@@ -70,7 +70,7 @@ export default function HomePage(){
   }, [])
 
 
-
+  console.log(localStorage)
 
 
   const handleChange = (selectedOption) => {
