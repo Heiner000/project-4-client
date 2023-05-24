@@ -1,17 +1,61 @@
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useParams } from 'react-router-dom'
 import API from '../../API'
 import jwtDecode from 'jwt-decode'
 
 export default function SellOrder(props) {
+    // get the stock ticker from URL params
     const { ticker } = useParams()
-    const [quantity, setQuantity] = useState(1)
-    // INCOMPLETE: Need to fetch user's shares
-    const [userShares, setUserShares] = useState(0)
 
+    const [quantity, setQuantity] = useState(1)
+    const [userShares, setUserShares] = useState(0)
+    const [userFunds, setUserFunds] = useState(0)
+
+    // get user's token from local storage and decode it to get their id
     const token = localStorage.getItem('access')
     const decodedToken = jwtDecode(token)
     const userId = decodedToken.user_id
+
+    // function to get user's shares
+    const getUserShares = useCallback(async () => {
+        try {
+            // fetch user's shares from API
+            const response = await API.get('user_shares', {params: {user_id: userId, ticker: ticker}})
+            setUserShares(response.data['total_shares'])
+            // if (response.data['total_shares'] > 0) {
+            //     // update userShares if the user has shares
+            //     setUserShares(response.data['total_shares'])
+            // } else {
+            //     // set userShares to 0 if user doesn't have any shares of this stock
+            //     setUserShares(0)
+            // }
+            // console.log('getUserShares: ', response.data['total_shares'])
+            console.log("users shares: ", userShares)
+        } catch (err) {
+            console.log(err)
+        }
+    }, [])
+
+    const getUserFunds = async () => {
+        try {
+            // fetch the user's funds from the API
+            const response = await API.get('user_info/', {params: {user_id: userId}})
+            // update the userFunds state with the fetched data
+            setUserFunds(response.data.funds)
+            console.log('user funds: ', response.data.funds)
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    // useEffect fetches data when the component mounts
+    useEffect(() => {
+        // call these functions to update state when component mounts
+        getUserFunds()
+        getUserShares()
+        // console.log("user's funds: ", userFunds)
+        // console.log("user's shares: ", userShares)
+    }, [getUserShares, userId]) // pass in getUserShares, userId as the dependency array to useEffect
 
     const handleDecrement = () => {
         if (quantity > 1) {
@@ -41,15 +85,27 @@ export default function SellOrder(props) {
                 price: parseFloat(props.companyData.price),
                 trade_type: 'SELL'
             }
-            const response = await API.post('trades/', tradeData)
-            if (response.status === 201) {
-                console.log("Sale made successfully")
+            // check if user has enough shares to sell
+            if (quantity > userShares) {
+                console.log("you don't have enough shares to sell")
             } else {
-                console.log("ERRROR creating sale")
+                const response = await API.post('trades/', tradeData)
+                if (response.status === 201) {
+                    console.log("Sale made successfully")
+                    // update userFunds with the funds from the response
+                    setUserFunds(response.data.funds)
+                    // Close the modal
+                    props.closeModal()
+                    // get updated number of shares
+                    getUserShares()
+                } else {
+                    console.log("Error creating SALE")
+                }
             }
         } catch (err) {
             console.log(err)
         }
+        console.log(userFunds)
     }
 
     return (
@@ -78,9 +134,8 @@ export default function SellOrder(props) {
             <h3 className='key-data-label'>Sale Total:</h3>
             <p>{calculateTotalPrice()}</p>
 
-            {/* need to pull funds from user model */}
             <h4 className='key-data-label'>Funds After Sale:</h4>
-            <p>$$$ + {calculateTotalPrice()}</p>
+            <p>$ {userFunds}</p>
 
             <div className="btn-div">
                 <button className='btn-modal' onClick={createSellTrade}>SELL NOW</button>
