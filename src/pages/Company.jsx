@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef, memo } from 'react'
 import { useParams } from 'react-router-dom'
 import BuyOrder from './components/BuyOrder'
 import SellOrder from './components/SellOrder'
@@ -12,6 +12,73 @@ export default function Company() {
     const [marketData, setMarketData] = useState([])
     const [showBuyModal, setShowBuyModal] = useState(false)
     const [showSellModal, setShowSellModal] = useState(false)
+    const contariner = useRef()
+
+
+
+    useEffect(
+        () => {
+          const script = document.createElement("script");
+          script.src = "https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js";
+          script.type = "text/javascript";
+          script.async = true;
+          script.innerHTML = `
+            {
+              "symbols": [
+                [
+                  "${ticker.toUpperCase()}",
+                  "${ticker.toUpperCase()}|1D"
+                ]
+              ],
+              "chartOnly": true,
+              "width": "400",
+              "height": "300",
+              "locale": "en",
+              "colorTheme": "dark",
+              "autosize": false,
+              "showVolume": false,
+              "showMA": false,
+              "hideDateRanges": true,
+              "hideMarketStatus": false,
+              "hideSymbolLogo": false,
+              "scalePosition": "no",
+              "scaleMode": "Normal",
+              "fontFamily": "-apple-system, BlinkMacSystemFont, Trebuchet MS, Roboto, Ubuntu, sans-serif",
+              "fontSize": "12",
+              "noTimeScale": true,
+              "valuesTracking": "1",
+              "changeMode": "price-and-percent",
+              "chartType": "line",
+              "fontColor": "rgba(255, 255, 255, 1)",
+              "backgroundColor": "rgba(34, 34, 34, 1)",
+              "lineWidth": 1,
+              "lineType": 0,
+              "dateRanges": [
+                "1d|1"
+              ],
+              "upColor": "#22ab94",
+              "downColor": "#f7525f",
+              "borderUpColor": "#22ab94",
+              "borderDownColor": "#f7525f",
+              "wickUpColor": "#22ab94",
+              "wickDownColor": "#f7525f",
+              "timeHoursFormat": "12-hours",
+              "color": "rgba(0, 102, 204, 1)"
+            }`;
+            if(contariner.current) {
+                contariner.current.appendChild(script);
+            }
+
+            // Cleanup function
+            return () => {
+                if(contariner.current && contariner.current.contains(script)) {
+                    contariner.current.removeChild(script);
+                }
+            }
+        },[ticker]);
+
+
+
 
     useEffect(() => {
         const fetchCompanyData = async () => {
@@ -48,7 +115,12 @@ export default function Company() {
 
             <h2>${companyData.price}</h2>
 
-            <div className='chart-div'>Chart plugin goes here</div>
+            <div className='chart-div'>
+                <div className="tradingview-widget-container" ref={contariner}>
+                    <div className="tradingview-widget-container__widget"></div>
+                    <div className="tradingview-widget-copyright"><a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank"><span className="blue-text">Track all markets</span></a> on TradingView</div>
+                </div>
+            </div>
 
             <div className="company-btn-div">
                 <button className='btn-modal buy-btn' onClick={() => setShowBuyModal(true)}>BUY</button>
