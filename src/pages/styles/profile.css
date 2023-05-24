@@ -1,10 +1,23 @@
+.profile-container {
+    display: flex;
+    flex-direction: column;
+}
 .profile-page-logo {
     height: 90px;
     width: 90px;
 }
-.profile-container {
+.profile-options-container{
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+.click-options{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.option-container{
+    border-top: 1px solid white;
+    width: 90%;
 }
