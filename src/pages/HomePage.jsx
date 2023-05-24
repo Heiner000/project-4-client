@@ -90,7 +90,7 @@ export default function HomePage(){
       }
     }
     getWatchlist()
-  }, [userId])
+  }, [userId] )
 
 
   useEffect(() => {
@@ -257,7 +257,7 @@ export default function HomePage(){
             </div>
 
             <div className='outer-portfolio'>
-            <h2>Portfolio: $ {portfolioTotalValue}</h2>
+            <h2>Portfolio:<span className='portfolio'> $ {portfolioTotalValue}</span></h2>
               <div className='portfolio-container'>
                 {displayPortfolio()}
               </div>
