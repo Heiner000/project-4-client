@@ -57,31 +57,32 @@ export default function Company() {
 
             {showBuyModal ? (
                 <div className="modal">
-                    <div className="overlay"></div>
-                    <div className="modal-content">
-                        <BuyOrder closeModal={() => setShowBuyModal(false)}
-                            companyData={companyData}
-                        />
+                    <div className="overlay">
+                        <div className="modal-content">
+                            <BuyOrder closeModal={() => setShowBuyModal(false)}
+                                companyData={companyData} />
+                        </div>
                     </div>
                 </div>
             ) : null}
             {showSellModal ? (
                 <div className="modal">
-                    <div className="overlay"><div className="modal-content">
-                        <SellOrder closeModal={() => setShowSellModal(false)}
-                            companyData={companyData} />
-                    </div>
+                    <div className="overlay">
+                        <div className="modal-content">
+                            <SellOrder closeModal={() => setShowSellModal(false)}
+                                companyData={companyData} />
+                        </div>
                     </div>
                 </div>
             ) : null}
 
             <p className='key-data-label'>Day Range</p>
             <hr />
-            <p>{marketData[1]['Day Range']}</p>
+            <p>$ {marketData[1]['Day Range']}</p>
 
             <p className='key-data-label'>52 Week Range</p>
             <hr />
-            <p>{marketData[2]['52 Week Range']}</p>
+            <p>$ {marketData[2]['52 Week Range']}</p>
 
             <p className="key-data-label">Market Cap</p>
             <hr />

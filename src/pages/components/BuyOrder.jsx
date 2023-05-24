@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import API from '../../API'
 import jwtDecode from 'jwt-decode'
@@ -6,10 +6,24 @@ import jwtDecode from 'jwt-decode'
 export default function BuyOrder(props) {
     const { ticker } = useParams()
     const [quantity, setQuantity] = useState(0)
+    const [userFunds, setUserFunds] = useState(0)
 
     const token = localStorage.getItem('access')
     const decodedToken = jwtDecode(token)
     const userId = decodedToken.user_id
+
+    useEffect(() => {
+        const getUserShares = async () => {
+            try {
+                const response = await API.get('user_info/', {params: {user_id: userId}})
+                setUserFunds(response.data.funds)
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        getUserShares()
+        console.log(userFunds)
+    }, [])
 
     const handleDecrement = () => {
         if (quantity > 0) {
@@ -77,7 +91,7 @@ export default function BuyOrder(props) {
 
             {/* need to pull funds available from user model */}
             <h4 className='key-data-label'>Funds Available:</h4>
-            <p>$ 10,000</p>
+            <p>$ {userFunds}</p>
 
             <div className="company-btn-div">
                 <button className='btn-modal' onClick={createBuyTrade}>BUY NOW</button>

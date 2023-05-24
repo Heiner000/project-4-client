@@ -1,44 +1,59 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useParams } from 'react-router-dom'
 import API from '../../API'
 import jwtDecode from 'jwt-decode'
 
 export default function SellOrder(props) {
+    // get the stock ticker from URL params
     const { ticker } = useParams()
+
     const [quantity, setQuantity] = useState(1)
     const [userShares, setUserShares] = useState(0)
     const [userFunds, setUserFunds] = useState(0)
 
+    // get user's token from local storage and decode it to get their id
     const token = localStorage.getItem('access')
     const decodedToken = jwtDecode(token)
     const userId = decodedToken.user_id
 
+    // function to get user's shares -- useCallback to memoize the function so it doesn't change unless the user id or ticker changes
+    const getUserShares = useCallback(async () => {
+        try {
+            // fetch user's shares from API
+            const response = await API.get('user_shares', {params: {user_id: userId, ticker: ticker}})
+            if (response.data.length > 0) {
+                // update userShares if the user has shares
+                setUserShares(response.data[0].total_quantity)
+            } else {
+                // set userShares to 0 if user doesn't have any shares of this stock
+                setUserShares(0)
+            }
+        } catch (err) {
+            console.log(err)
+        }
+    }, [userId, ticker]) // pass in userId, ticker as dependency for useCallback
+
+    console.log(ticker)
+    const getUserFunds = async () => {
+        try {
+            // fetch the user's funds from the API
+            const response = await API.get('user_info/', {params: {user_id: userId}})
+            // update the userFunds state with the fetched data
+            setUserFunds(response.data.funds)
+            console.log(response.data)
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    // useEffect fetches data when the component mounts
     useEffect(() => {
-        const getUserFunds = async () => {
-            try {
-                const response = await API.get('user_info/', {params: {user_id: userId}})
-                setUserFunds(response.data.funds)
-            } catch (err) {
-                console.log(err)
-            }
-        }
-        const getUserShares = async () => {
-            try {
-                const response = await API.get('user_shares', {params: {user_id: userId, ticker: ticker}})
-                if (response.data.length > 0) {
-                    setUserShares(response.data[0].total_quantity)
-                } else {
-                    // if there are no trades for the ticker
-                    setUserShares(0)
-                }
-                console.log(response.data)
-            } catch (err) {
-                console.log(err)
-            }
-        }
+        // call these functions to update state when component mounts
         getUserFunds()
         getUserShares()
-    }, [])
+        console.log("user's funds: ", userFunds)
+        console.log("user's shares: ", userShares)
+    }, [getUserShares, userId]) // pass in getUserShares, userId as the dependency array to useEffect
 
     const handleDecrement = () => {
         if (quantity > 1) {
@@ -68,15 +83,27 @@ export default function SellOrder(props) {
                 price: parseFloat(props.companyData.price),
                 trade_type: 'SELL'
             }
-            const response = await API.post('trades/', tradeData)
-            if (response.status === 201) {
-                console.log("Sale made successfully")
+            // check if user has enough shares to sell
+            if (quantity > userShares) {
+                console.log("you don't have enough shares to sell")
             } else {
-                console.log("ERRROR creating sale")
+                const response = await API.post('trades/', tradeData)
+                if (response.status === 201) {
+                    console.log("Sale made successfully")
+                    // update userFunds with the funds from the response
+                    setUserFunds(response.data.funds)
+                    // Close the modal
+                    props.closeModal()
+                    // get updated number of shares
+                    getUserShares()
+                } else {
+                    console.log("ERRROR creating sale")
+                }
             }
         } catch (err) {
             console.log(err)
         }
+        console.log(userFunds)
     }
 
     return (
