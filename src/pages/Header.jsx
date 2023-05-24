@@ -67,6 +67,9 @@ export default function Header() {
                     <div className='option-container'>
                         <p>Funds</p>
                     </div>
+                    <div onClick={() => window.location.href = '/login'} className='option-container'>
+                        <p>Logout</p>
+                    </div>
                 </div>
 
             </div>
