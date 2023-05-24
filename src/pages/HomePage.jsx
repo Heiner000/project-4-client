@@ -207,9 +207,9 @@ export default function HomePage(){
 
     return(
         <div className='container'>
-          <div className='logo-container' onClick={() => {window.location.href = '/profile'}}>
+          {/* <div className='logo-container' onClick={() => {window.location.href = '/profile'}}>
             <img  className='profile-logo' src="../../images/profile-logo.png" alt="profile logo" />
-          </div>
+          </div> */}
             <h1>Hi, {username}</h1>
             <div className='user-funds'>
               <h2>Funds:</h2>

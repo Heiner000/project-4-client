@@ -5,14 +5,17 @@ import HomePage from './pages/HomePage';
 import Portfolio from './pages/Portfolio';
 import Company from './pages/Company';
 import Profile from './pages/Profile';
+import Header from './pages/Header';
 import React from 'react'
 
 
 
 function App() {
+  
 
   return (
     <Router>
+      <Header/>
       <Routes>
 
         <Route 
