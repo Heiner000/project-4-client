@@ -5,7 +5,7 @@ import jwtDecode from 'jwt-decode'
 
 export default function BuyOrder(props) {
     const { ticker } = useParams()
-    const [quantity, setQuantity] = useState(0)
+    const [quantity, setQuantity] = useState(1)
     const [userFunds, setUserFunds] = useState(0)
 
     const token = localStorage.getItem('access')
@@ -26,7 +26,7 @@ export default function BuyOrder(props) {
     }, [])
 
     const handleDecrement = () => {
-        if (quantity > 0) {
+        if (quantity > 1) {
             setQuantity(quantity - 1)
         }
     }

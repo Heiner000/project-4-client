@@ -11,6 +11,8 @@ export default function HomePage(){
   const [watchlist, setWatchlist] = useState()
   const [username, setUsername] = useState('User')
   const [userFunds, setUserFunds] = useState(0)
+  const [userPortfolio, setUserPortfolio] = useState([])
+
   const options = [
     { value: 'aapl', label: 'Apple - AAPL' },
     { value: 'msft', label: 'Microsoft - MSFT' },
@@ -90,7 +92,18 @@ export default function HomePage(){
   }, [])
 
 
-  
+  useEffect(() => {
+    const getUserPortfolio = async () => {
+      try {
+        const response = await API.get('user_all_shares/', {params: {user_id: userId}})
+        setUserPortfolio(response.data)
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    getUserPortfolio()
+    console.log('useEffect getUserPortfolio: ', userPortfolio)
+  }, [])
 
 
   const handleChange = (selectedOption) => {
@@ -114,10 +127,10 @@ export default function HomePage(){
     try {
       const response = await API.post('watchlist/', data)
       if (response.status === 201){
-        console.log("Trade created successfully")
+        console.log("Stock added to watchlist")
         getWatchlist()
       } else {
-        console.log("Unable to create trade")
+        console.log("Unable to add stock to watchlist")
       }
     } catch (err) {
       console.log(err)
@@ -198,12 +211,25 @@ export default function HomePage(){
 
 
 
-  const displayStocks = async () => {
-    axios.get(`http://localhost:8000/portfolio/`)
+  const displayPortfolio =  () => {
+    // iterate over the userPortfolio state
+    return userPortfolio.map((portfolioItem, i) => {
+      // get each ticker
+      const ticker = Object.keys(portfolioItem)[0]
+      // get the quantity for that ticker
+      const quantity = portfolioItem[ticker]
+      return (
+        <div className="portfolio-stock" key={i} onClick={() => changeWindow(ticker)}>
+          <p>{ticker} x {quantity}</p>
+        </div>
+      )
+    })
   }
 
 
-
+  if (!userPortfolio.length) {
+    return <div className='loading'><p>Loading...</p></div>
+  }
 
     return(
         <div className='container'>
@@ -219,7 +245,7 @@ export default function HomePage(){
             <div className='outer-portfolio'>
             <h2>Portfolio</h2>
               <div className='portfolio-container'>
-                {/* users purchased stocks here */}
+                {displayPortfolio()}
               </div>
             </div>
 
