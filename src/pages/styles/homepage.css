@@ -12,14 +12,19 @@
     animation: neonGlow 1.5s ease-in-out infinite alternate;
 }
 .portfolio-stock {
+    border: solid 1px #0066cc;
     display: flex;
     justify-content: space-between;
+    padding: 0px 10px;
 }
 .watch-stock {
     border: solid 1px #0066cc;
+    display: flex;
+    justify-content: space-between;
 }
 .watch-stock p {
-    padding-left: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 .watchlist-container{
     border: solid 1.75px #0066cc;
@@ -88,6 +93,14 @@ h2 {
 h1 {
     color: #0066cc;
     text-align: center;
+}
+
+.gain {
+    color: #00cc66;
+}
+
+.loss {
+    color: #ff4d4d;
 }
 @keyframes neonGlow {
     from {
