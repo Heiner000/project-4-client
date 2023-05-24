@@ -11,6 +11,10 @@
     box-shadow: 0 0 10px rgba(0, 102, 204, 0.3);
     animation: neonGlow 1.5s ease-in-out infinite alternate;
 }
+.portfolio-stock {
+    display: flex;
+    justify-content: space-between;
+}
 .watch-stock {
     border: solid 1px #0066cc;
 }

@@ -1,4 +1,3 @@
-import axios from 'axios'
 import ReactSelect from 'react-select'
 import { useState, useEffect } from 'react'
 import API from '../API'
@@ -11,7 +10,9 @@ export default function HomePage(){
   const [watchlist, setWatchlist] = useState()
   const [username, setUsername] = useState('User')
   const [userFunds, setUserFunds] = useState(0)
-  const [userPortfolio, setUserPortfolio] = useState([])
+  const [userPortfolioShares, setUserPortfolioShares] = useState([])
+  const [userPortfolioValues, setUserPortfolioValues] = useState([])
+  const [portfolioTotalValue, setPortfolioTotalValue] = useState(0)
 
   const options = [
     { value: 'aapl', label: 'Apple - AAPL' },
@@ -75,7 +76,7 @@ export default function HomePage(){
       }
     }
     getUsername()
-  }, [userFunds])
+  }, [userId, userFunds])
   
 
   useEffect(() => {
@@ -89,21 +90,33 @@ export default function HomePage(){
       }
     }
     getWatchlist()
-  }, [])
+  }, [userId])
 
 
   useEffect(() => {
-    const getUserPortfolio = async () => {
+    const getUserPortfolioShares = async () => {
       try {
         const response = await API.get('user_all_shares/', {params: {user_id: userId}})
-        setUserPortfolio(response.data)
+        setUserPortfolioShares(response.data)
       } catch (err) {
         console.log(err)
       }
     }
-    getUserPortfolio()
-    console.log('useEffect getUserPortfolio: ', userPortfolio)
-  }, [])
+    const getUserPortfolioValues = async () => {
+      try {
+        const response = await API.get('user_portfolio_values/', {params: {user_id: userId}})
+        setUserPortfolioValues(response.data.portfolio_values)
+        setPortfolioTotalValue(response.data.total_portfolio_value)
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    getUserPortfolioShares()
+    console.log('UE getUserPortfolioShares: ', userPortfolioShares)
+    getUserPortfolioValues()
+    console.log('UE: portfolio values : ', userPortfolioValues)
+    console.log('UE: portfolio total value : ', portfolioTotalValue)
+  },[userId])
 
 
   const handleChange = (selectedOption) => {
@@ -202,7 +215,7 @@ export default function HomePage(){
     return [...watchlist].reverse().map((ticker, i) => {
       return(
         <div className='watch-stock' onClick={() => changeWindow(ticker)}>
-          <p key={i}>{ticker}</p>
+          <p key={i}>{ticker.toUpperCase()}</p>
         </div>
       )
     })
@@ -213,21 +226,22 @@ export default function HomePage(){
 
   const displayPortfolio =  () => {
     // iterate over the userPortfolio state
-    return userPortfolio.map((portfolioItem, i) => {
+    return userPortfolioValues.map((portfolioItem, i) => {
       // get each ticker
       const ticker = Object.keys(portfolioItem)[0]
-      // get the quantity for that ticker
-      const quantity = portfolioItem[ticker]
+      // get the value for that ticker
+      const value = portfolioItem[ticker]
       return (
         <div className="portfolio-stock" key={i} onClick={() => changeWindow(ticker)}>
-          <p>{ticker} x {quantity}</p>
+          <p>{ticker.toUpperCase()}</p>
+          <p>$ {value}</p>
         </div>
       )
     })
   }
 
 
-  if (!userPortfolio.length) {
+  if (!userPortfolioValues.length) {
     return <div className='loading'><p>Loading...</p></div>
   }
 
@@ -239,11 +253,11 @@ export default function HomePage(){
             <h1>Hi, {username}</h1>
             <div className='user-funds'>
               <h2>Funds:</h2>
-              <p>${userFunds}</p>
+              <p>$ {userFunds}</p>
             </div>
 
             <div className='outer-portfolio'>
-            <h2>Portfolio</h2>
+            <h2>Portfolio: $ {portfolioTotalValue}</h2>
               <div className='portfolio-container'>
                 {displayPortfolio()}
               </div>
