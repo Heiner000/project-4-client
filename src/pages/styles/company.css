@@ -43,6 +43,14 @@
     margin-bottom: 0px;
 }
 
+.chart-div {
+    height: 300px;
+    width: 400px;
+    overflow-y: auto;
+    box-shadow: 0 0 10px rgba(0, 102, 204, 0.3);
+    animation: neonGlow 1.5s ease-in-out infinite alternate;
+}
+
 p {
     color: #0066cc;
 }
@@ -56,3 +64,12 @@ h1 {
     color: #0066cc;
     text-align: center;
 }
+
+@keyframes neonGlow {
+    from {
+      box-shadow: 0 0 5px rgba(0, 102, 204, 0.5);
+    }
+    to {
+      box-shadow: 0 0 15px rgba(0, 102, 204, 0.7);
+    }
+  }
