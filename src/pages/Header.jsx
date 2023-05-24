@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { FaBars, FaTimes } from 'react-icons/fa'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import API from '../API'
 import jwtDecode from 'jwt-decode'
 import axios from 'axios'
@@ -9,9 +9,9 @@ import './styles/headers.css'
 export default function Header() {
 
 
-
     const [location, setLocation] = useState()
     const [username, setUsername] = useState()
+    const [editFunds, setEditFunds] = useState(false)
 
     const token = localStorage.getItem('access')
     const decodedToken = jwtDecode(token)
@@ -20,8 +20,8 @@ export default function Header() {
 
     useEffect(() => {
         const userData = async () => {
-            try{
-                const response = await API.get('user_info', {params: {user_id: userId}})
+            try {
+                const response = await API.get('user_info', { params: { user_id: userId } })
                 setUsername(response.data.username)
                 const locationResponse = await axios.get(`https://api.zippopotam.us/us/${response.data.zip_code}`)
                 const data = locationResponse.data.places[0]
@@ -29,23 +29,47 @@ export default function Header() {
                 const placename = data['place name']
                 const state = data['state abbreviation']
                 setLocation(`${placename}, ${state}`)
-            } catch(err){
+            } catch (err) {
                 console.log(err)
             }
-            
+
         }
         userData()
-    },[])
+    }, [])
 
 
 
     const [click, setClick] = useState(false)
     const handleClick = () => setClick(!click)
     const closeMenu = () => setClick(false)
-    
 
 
-    return(
+    const fundsRef = useRef()
+
+    const handleFundsSubmit = async (e) => {
+        e.preventDefault()
+        const newFunds = fundsRef.current.value
+        try {
+            const response = await API.patch('update_funds/', { funds: newFunds, user_id: userId })
+
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+
+    {editFunds ? (
+        <form onSubmit={handleFundsSubmit}>
+            <input type='number' defaultValue={user.funds} ref={fundsRef} />
+            <button type='submit'>Update</button>
+        </form>
+    ) : (
+        <p>{user.funds}</p>
+    )}
+
+
+
+    return (
         <div>
             <div className={click ? 'nav-menu active' : 'nav-menu'}>
                 <div className='profile-options-container'>
@@ -64,7 +88,7 @@ export default function Header() {
                     <div className='option-container'>
                         <p>Followers</p>
                     </div>
-                    <div className='option-container'>
+                    <div className='option-container' onClick={() => setEditFunds(!editFunds)}>
                         <p>Funds</p>
                     </div>
                     <div onClick={() => window.location.href = '/login'} className='option-container'>
@@ -75,9 +99,9 @@ export default function Header() {
             </div>
             <div className='hamburger' onClick={handleClick}>
                 {click ? (
-                    <FaTimes size={20} style={{color: '#0066cc'}}/>
+                    <FaTimes size={20} style={{ color: '#0066cc' }} />
                 ) : (
-                    <FaBars size={20} style={{color: '#0066cc'}}/>
+                    <FaBars size={20} style={{ color: '#0066cc' }} />
 
                 )}
             </div>
