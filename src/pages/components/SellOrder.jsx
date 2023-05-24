@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import API from '../../API'
 import jwtDecode from 'jwt-decode'
@@ -6,12 +6,39 @@ import jwtDecode from 'jwt-decode'
 export default function SellOrder(props) {
     const { ticker } = useParams()
     const [quantity, setQuantity] = useState(1)
-    // INCOMPLETE: Need to fetch user's shares
     const [userShares, setUserShares] = useState(0)
+    const [userFunds, setUserFunds] = useState(0)
 
     const token = localStorage.getItem('access')
     const decodedToken = jwtDecode(token)
     const userId = decodedToken.user_id
+
+    useEffect(() => {
+        const getUserFunds = async () => {
+            try {
+                const response = await API.get('user_info/', {params: {user_id: userId}})
+                setUserFunds(response.data.funds)
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        const getUserShares = async () => {
+            try {
+                const response = await API.get('user_shares', {params: {user_id: userId, ticker: ticker}})
+                if (response.data.length > 0) {
+                    setUserShares(response.data[0].total_quantity)
+                } else {
+                    // if there are no trades for the ticker
+                    setUserShares(0)
+                }
+                console.log(response.data)
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        getUserFunds()
+        getUserShares()
+    }, [])
 
     const handleDecrement = () => {
         if (quantity > 1) {
@@ -78,13 +105,12 @@ export default function SellOrder(props) {
             <h3 className='key-data-label'>Sale Total:</h3>
             <p>{calculateTotalPrice()}</p>
 
-            {/* need to pull funds from user model */}
             <h4 className='key-data-label'>Funds After Sale:</h4>
-            <p>$$$ + {calculateTotalPrice()}</p>
+            <p>$ {userFunds}</p>
 
             <div className="btn-div">
                 <button className='btn-modal' onClick={createSellTrade}>SELL NOW</button>
-                <button className='btn-modal' onClick={() => props.closeModal()}>Cancel</button>
+                <button onClick={() => props.closeModal()}>Cancel</button>
             </div>
 
         </div>
