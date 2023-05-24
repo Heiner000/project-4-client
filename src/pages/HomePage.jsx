@@ -212,10 +212,11 @@ export default function HomePage(){
   }
 
   const displayWatchlist = () => {
-    return [...watchlist].reverse().map((ticker, i) => {
+    return [...watchlist].reverse().map((stock, i) => {
       return(
-        <div className='watch-stock' onClick={() => changeWindow(ticker)}>
-          <p key={i}>{ticker.toUpperCase()}</p>
+        <div className='watch-stock' onClick={() => changeWindow(stock.ticker)}>
+          <p key={i}>{stock.ticker.toUpperCase()}</p>
+          <p className={parseFloat(stock.percentage) > 0 ? 'gain' : 'loss'}>{stock.percentage}</p>
         </div>
       )
     })
@@ -247,9 +248,6 @@ export default function HomePage(){
 
     return(
         <div className='container'>
-          {/* <div className='logo-container' onClick={() => {window.location.href = '/profile'}}>
-            <img  className='profile-logo' src="../../images/profile-logo.png" alt="profile logo" />
-          </div> */}
             <h1>Hi, {username}</h1>
             <div className='user-funds'>
               <h2>Funds:</h2>
@@ -266,7 +264,7 @@ export default function HomePage(){
             <div className='outer-watchlist'>
               <h2>Watchlist</h2>
               <div className='watchlist-container'>
-                {watchlist ? displayWatchlist() : 'loading'}
+                {watchlist ? displayWatchlist() : <p>loading...</p>}
               </div>
 
               <div className='new-stock'>
