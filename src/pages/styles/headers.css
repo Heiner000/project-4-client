@@ -21,3 +21,46 @@
     position: relative;
     padding: 7px;
 }
+.edit-funds{
+    display: flex;
+    align-items: center;
+}
+.edit-funds p{
+    color: green;
+}
+.edit-funds input, button{
+    background-color: transparent;
+    border: 1px solid #0066cc;
+    color: white;
+    margin-left: 5px;
+}
+.fund-span{
+    color: white;
+}
+
+.profile-container {
+    display: flex;
+    flex-direction: column;
+}
+.profile-page-logo {
+    height: 90px;
+    width: 90px;
+}
+.profile-options-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.click-options{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.option-container{
+    border-top: 1px solid white;
+    width: 90%;
+}
+.option-container p{
+    font-weight: bold;
+}
