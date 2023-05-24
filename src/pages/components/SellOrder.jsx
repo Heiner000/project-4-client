@@ -16,31 +16,33 @@ export default function SellOrder(props) {
     const decodedToken = jwtDecode(token)
     const userId = decodedToken.user_id
 
-    // function to get user's shares -- useCallback to memoize the function so it doesn't change unless the user id or ticker changes
+    // function to get user's shares
     const getUserShares = useCallback(async () => {
         try {
             // fetch user's shares from API
             const response = await API.get('user_shares', {params: {user_id: userId, ticker: ticker}})
-            if (response.data.length > 0) {
-                // update userShares if the user has shares
-                setUserShares(response.data[0].total_quantity)
-            } else {
-                // set userShares to 0 if user doesn't have any shares of this stock
-                setUserShares(0)
-            }
+            setUserShares(response.data['total_shares'])
+            // if (response.data['total_shares'] > 0) {
+            //     // update userShares if the user has shares
+            //     setUserShares(response.data['total_shares'])
+            // } else {
+            //     // set userShares to 0 if user doesn't have any shares of this stock
+            //     setUserShares(0)
+            // }
+            // console.log('getUserShares: ', response.data['total_shares'])
+            console.log("users shares: ", userShares)
         } catch (err) {
             console.log(err)
         }
-    }, [userId, ticker]) // pass in userId, ticker as dependency for useCallback
+    }, [])
 
-    console.log(ticker)
     const getUserFunds = async () => {
         try {
             // fetch the user's funds from the API
             const response = await API.get('user_info/', {params: {user_id: userId}})
             // update the userFunds state with the fetched data
             setUserFunds(response.data.funds)
-            console.log(response.data)
+            console.log('user funds: ', response.data.funds)
         } catch (err) {
             console.log(err)
         }
@@ -51,8 +53,8 @@ export default function SellOrder(props) {
         // call these functions to update state when component mounts
         getUserFunds()
         getUserShares()
-        console.log("user's funds: ", userFunds)
-        console.log("user's shares: ", userShares)
+        // console.log("user's funds: ", userFunds)
+        // console.log("user's shares: ", userShares)
     }, [getUserShares, userId]) // pass in getUserShares, userId as the dependency array to useEffect
 
     const handleDecrement = () => {
