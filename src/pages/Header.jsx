@@ -46,26 +46,26 @@ export default function Header() {
 
     const fundsRef = useRef()
 
-    const handleFundsSubmit = async (e) => {
-        e.preventDefault()
-        const newFunds = fundsRef.current.value
-        try {
-            const response = await API.patch('update_funds/', { funds: newFunds, user_id: userId })
+    // const handleFundsSubmit = async (e) => {
+    //     e.preventDefault()
+    //     const newFunds = fundsRef.current.value
+    //     try {
+    //         const response = await API.patch('update_funds/', { funds: newFunds, user_id: userId })
 
-        } catch (err) {
-            console.log(err)
-        }
-    }
+    //     } catch (err) {
+    //         console.log(err)
+    //     }
+    // }
 
 
-    {editFunds ? (
-        <form onSubmit={handleFundsSubmit}>
-            <input type='number' defaultValue={user.funds} ref={fundsRef} />
-            <button type='submit'>Update</button>
-        </form>
-    ) : (
-        <p>{user.funds}</p>
-    )}
+    // {editFunds ? (
+    //     <form onSubmit={handleFundsSubmit}>
+    //         <input type='number' defaultValue={user.funds} ref={fundsRef} />
+    //         <button type='submit'>Update</button>
+    //     </form>
+    // ) : (
+    //     <p>{user.funds}</p>
+    // )}
 
 
 
