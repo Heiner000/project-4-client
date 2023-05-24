@@ -54,6 +54,10 @@ export default function BuyOrder(props) {
             const response = await API.post('trades/', tradeData)
             if (response.status === 201) {
                 console.log("BUY created successfully")
+                // update userFunds with funds from the response
+                setUserFunds(response.data.funds)
+                // close the modal
+                props.closeModal()
             } else {
                 console.log("Error creating BUY")
             }
@@ -89,7 +93,6 @@ export default function BuyOrder(props) {
             <h3 className='key-data-label'>Total Cost:</h3>
             <p>{calculateTotalPrice()}</p>
 
-            {/* need to pull funds available from user model */}
             <h4 className='key-data-label'>Funds Available:</h4>
             <p>$ {userFunds}</p>
 

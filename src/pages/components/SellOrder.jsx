@@ -99,7 +99,7 @@ export default function SellOrder(props) {
                     // get updated number of shares
                     getUserShares()
                 } else {
-                    console.log("ERRROR creating sale")
+                    console.log("Error creating SALE")
                 }
             }
         } catch (err) {
