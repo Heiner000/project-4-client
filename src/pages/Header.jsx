@@ -11,21 +11,26 @@ export default function Header() {
 
     const [location, setLocation] = useState()
     const [username, setUsername] = useState()
-    const [editFunds, setEditFunds] = useState(false)
-
+    const [userFunds, setUserFunds] = useState()
+    const [click, setClick] = useState(false)
+    const [clickFunds, setClickFunds] = useState(true)
+    const handleClick = () => setClick(!click)
+    const handleClickFunds = () => setClickFunds(!clickFunds)
     const token = localStorage.getItem('access')
     const decodedToken = jwtDecode(token)
     const userId = decodedToken.user_id
+    const inputRef = useRef()
 
 
+    // GETS THE LOCATION, USERNAME AND FUNDS TO STATE
     useEffect(() => {
         const userData = async () => {
             try {
                 const response = await API.get('user_info', { params: { user_id: userId } })
+                setUserFunds(response.data.funds)
                 setUsername(response.data.username)
                 const locationResponse = await axios.get(`https://api.zippopotam.us/us/${response.data.zip_code}`)
                 const data = locationResponse.data.places[0]
-                console.log(data)
                 const placename = data['place name']
                 const state = data['state abbreviation']
                 setLocation(`${placename}, ${state}`)
@@ -35,37 +40,28 @@ export default function Header() {
 
         }
         userData()
-    }, [])
+    }, [clickFunds])
 
 
-
-    const [click, setClick] = useState(false)
-    const handleClick = () => setClick(!click)
-    const closeMenu = () => setClick(false)
-
-
-    const fundsRef = useRef()
-
-    // const handleFundsSubmit = async (e) => {
-    //     e.preventDefault()
-    //     const newFunds = fundsRef.current.value
-    //     try {
-    //         const response = await API.patch('update_funds/', { funds: newFunds, user_id: userId })
-
-    //     } catch (err) {
-    //         console.log(err)
-    //     }
-    // }
+    const updateFunds = async () => {
+        const data = {
+            userId,
+            funds: inputRef.current.value
+        }
+        try {
+            console.log(data)
+            const response = await API.put('update_funds/', data)
+            console.log(response)
+        }catch(err){
+            console.log(err)
+        }
+    }
 
 
-    // {editFunds ? (
-    //     <form onSubmit={handleFundsSubmit}>
-    //         <input type='number' defaultValue={user.funds} ref={fundsRef} />
-    //         <button type='submit'>Update</button>
-    //     </form>
-    // ) : (
-    //     <p>{user.funds}</p>
-    // )}
+    
+
+
+    
 
 
 
@@ -88,8 +84,18 @@ export default function Header() {
                     <div className='option-container'>
                         <p>Followers</p>
                     </div>
-                    <div className='option-container' onClick={() => setEditFunds(!editFunds)}>
-                        <p>Funds</p>
+                    <div className='option-container'>
+                        { clickFunds ? (
+                            <p onClick={handleClickFunds}>Funds - <span className='fund-span'>${userFunds}</span></p>
+                        ) : (
+                            <div className='edit-funds'>
+                                <p onClick={handleClickFunds}>Edit Funds:</p>
+                                <input ref={inputRef} placeholder='$' type="text" />
+                                <button onClick={updateFunds}>Ok</button>
+                            </div>
+                        )
+                        }
+
                     </div>
                     <div onClick={() => window.location.href = '/login'} className='option-container'>
                         <p>Logout</p>

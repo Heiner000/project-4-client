@@ -75,7 +75,7 @@ export default function HomePage(){
       }
     }
     getUsername()
-  }, [])
+  }, [userFunds])
   
 
   useEffect(() => {
