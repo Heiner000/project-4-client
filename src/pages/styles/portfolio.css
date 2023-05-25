@@ -1,0 +1,46 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.trades-container{
+    display: flex;
+    flex-direction: column;
+    height: 70vh;
+    margin: 5px 10px;
+    border: solid 1.75px #0066cc;
+    overflow-y: auto;
+    box-shadow: 0 0 10px rgba(0, 102, 204, 0.3);
+    animation: neonGlow 1.5s ease-in-out infinite alternate;
+    color: #0066cc;
+}
+
+.trade-row {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+    padding: 1rem 0;
+}
+
+.trade-col {
+    flex: 1;
+    text-align: center;
+}
+
+.buy {
+    color: #00cc66;
+    font-size: .75rem;
+}
+
+.sell {
+    color: #ff4d4d;
+    font-size: .75rem;
+}
+
+.date {
+    font-size: .75rem;
+}

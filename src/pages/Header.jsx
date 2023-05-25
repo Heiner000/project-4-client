@@ -78,10 +78,10 @@ export default function Header() {
                     <div onClick={() => window.location.href = '/homepage'} className='option-container'>
                         <p>Homepage</p>
                     </div>
-                    <div className='option-container'>
+                    <div onClick={() => window.location.href = '/portfolio'} className='option-container'>
                         <p>History</p>
                     </div>
-                    <div className='option-container'>
+                    <div onClick={() => window.location.href = '/followers'} className='option-container'>
                         <p>Followers</p>
                     </div>
                     <div className='option-container'>

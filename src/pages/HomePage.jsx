@@ -13,6 +13,7 @@ export default function HomePage(){
   const [userPortfolioShares, setUserPortfolioShares] = useState([])
   const [userPortfolioValues, setUserPortfolioValues] = useState([])
   const [portfolioTotalValue, setPortfolioTotalValue] = useState(0)
+  const [percentageChange, setPercentageChange] = useState([])
 
   const options = [
     { value: 'aapl', label: 'Apple - AAPL' },
@@ -107,6 +108,7 @@ export default function HomePage(){
         const response = await API.get('user_portfolio_values/', {params: {user_id: userId}})
         setUserPortfolioValues(response.data.portfolio_values)
         setPortfolioTotalValue(response.data.total_portfolio_value)
+        setPercentageChange(response.data.unrealized_change_percentage)
       } catch (err) {
         console.log(err)
       }
@@ -116,6 +118,7 @@ export default function HomePage(){
     getUserPortfolioValues()
     console.log('UE: portfolio values : ', userPortfolioValues)
     console.log('UE: portfolio total value : ', portfolioTotalValue)
+    console.log('UE: percentage changes : ', percentageChange)
   },[userId])
 
 
@@ -214,8 +217,8 @@ export default function HomePage(){
   const displayWatchlist = () => {
     return [...watchlist].reverse().map((stock, i) => {
       return(
-        <div className='watch-stock' onClick={() => changeWindow(stock.ticker)}>
-          <p key={i}>{stock.ticker.toUpperCase()}</p>
+        <div className='watch-stock' key={i} onClick={() => changeWindow(stock.ticker)}>
+          <p>{stock.ticker.toUpperCase()}</p>
           <p className={parseFloat(stock.percentage) > 0 ? 'gain' : 'loss'}>{stock.percentage}</p>
         </div>
       )
@@ -232,9 +235,15 @@ export default function HomePage(){
       const ticker = Object.keys(portfolioItem)[0]
       // get the value for that ticker
       const value = portfolioItem[ticker]
+
+      // find the matching percent change object
+      const percentageChangeObject = percentageChange.find(item => Object.keys(item)[0] === ticker)
+      // pull out the % change for that ticker
+      const changePercentage = percentageChangeObject ? percentageChangeObject[ticker] : "N/A"
       return (
         <div className="portfolio-stock" key={i} onClick={() => changeWindow(ticker)}>
           <p>{ticker.toUpperCase()}</p>
+          <p className={parseFloat(changePercentage) > 0 ? 'gain' : 'loss'}>% {changePercentage}</p>
           <p>$ {value}</p>
         </div>
       )
