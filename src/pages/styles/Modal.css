@@ -3,10 +3,11 @@ body.active-modal {
 }
 
 .btn-modal {
-    padding: 10px 20px;
+    /* padding: 10px 20px; */
     display: block;
     margin: 100px auto 0;
     font-size: 18px;
+    border-radius: 7%;
 }
 
 .modal, .overlay {

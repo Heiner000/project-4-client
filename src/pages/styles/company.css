@@ -24,25 +24,63 @@
     display: flex;
     justify-content: center;
 }
-.company-btn-div button{
+
+.company-btn-div button {
     margin: 10px;
     height: 55px;
     width: 30%;
     font-size: 20px;
 }
 
+.input-container {
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    /* margin-bottom: 20px; */
+}
+
+.quantity-container {
+    display: flex;
+    /* align-items: center; */
+}
+
+.input-field {
+    width: 25%;
+}
+
+.increment-btn,
+.decrement-btn {
+    font-size: 1.5rem;
+    font-weight: bold;
+    width: 20%;
+    margin: 0 5px;
+}
+
+.increment-btn {
+    border-radius: 7%;
+    border-color: #00cc66;
+}
+
+.decrement-btn {
+    border-radius: 7%;
+    border-color: #ff4d4d;
+}
+
+
 .buy-btn {
-    background-color: #0066cc;
-    border: 2px solid lime;
+    background-color: #00cc66;
+    border: 2px solid #0066cc;
     color: white;
     border-radius: 7%;
+    box-shadow: 0 0 15px rgba(0, 102, 204, 0.3);
 }
 
 .sell-btn {
-    background-color: #0066cc;
-    border: 2px solid crimson;
+    background-color: transparent;
+    border: 2px solid #ff4d4d;
     color: white;
     border-radius: 7%;
+    box-shadow: 0 0 15px rgba(0, 102, 204, 0.3);
 }
 
 .key-data-label {
@@ -75,9 +113,17 @@ h1 {
 
 @keyframes neonGlow {
     from {
-      box-shadow: 0 0 5px rgba(0, 102, 204, 0.5);
+        box-shadow: 0 0 5px rgba(0, 102, 204, 0.5);
     }
+
     to {
-      box-shadow: 0 0 15px rgba(0, 102, 204, 0.7);
+        box-shadow: 0 0 15px rgba(0, 102, 204, 0.7);
     }
-  }
+}
+
+.disabled {
+    background-color: darkgray;
+    color: lightgray;
+    cursor: not-allowed;
+    border-color: black;
+}
