@@ -10,6 +10,7 @@ export default function SellOrder(props) {
     const [quantity, setQuantity] = useState(1)
     const [userShares, setUserShares] = useState(0)
     const [userFunds, setUserFunds] = useState(0)
+    const [enoughShares, setEnoughShares] = useState(true)
 
     // get user's token from local storage and decode it to get their id
     const token = localStorage.getItem('access')
@@ -20,16 +21,8 @@ export default function SellOrder(props) {
     const getUserShares = useCallback(async () => {
         try {
             // fetch user's shares from API
-            const response = await API.get('user_shares', {params: {user_id: userId, ticker: ticker}})
-            setUserShares(response.data['total_shares'])
-            // if (response.data['total_shares'] > 0) {
-            //     // update userShares if the user has shares
-            //     setUserShares(response.data['total_shares'])
-            // } else {
-            //     // set userShares to 0 if user doesn't have any shares of this stock
-            //     setUserShares(0)
-            // }
-            // console.log('getUserShares: ', response.data['total_shares'])
+            const response = await API.get('user_shares', { params: { user_id: userId, ticker: ticker } })
+            setUserShares(response.data['total_shares_owned'])
             console.log("users shares: ", userShares)
         } catch (err) {
             console.log(err)
@@ -39,7 +32,7 @@ export default function SellOrder(props) {
     const getUserFunds = async () => {
         try {
             // fetch the user's funds from the API
-            const response = await API.get('user_info/', {params: {user_id: userId}})
+            const response = await API.get('user_info/', { params: { user_id: userId } })
             // update the userFunds state with the fetched data
             setUserFunds(response.data.funds)
             console.log('user funds: ', response.data.funds)
@@ -53,9 +46,7 @@ export default function SellOrder(props) {
         // call these functions to update state when component mounts
         getUserFunds()
         getUserShares()
-        // console.log("user's funds: ", userFunds)
-        // console.log("user's shares: ", userShares)
-    }, [getUserShares, userId]) // pass in getUserShares, userId as the dependency array to useEffect
+    }, [getUserShares, userId])
 
     const handleDecrement = () => {
         if (quantity > 1) {
@@ -88,6 +79,7 @@ export default function SellOrder(props) {
             // check if user has enough shares to sell
             if (quantity > userShares) {
                 console.log("you don't have enough shares to sell")
+                setEnoughShares(false)
             } else {
                 const response = await API.post('trades/', tradeData)
                 if (response.status === 201) {
@@ -98,6 +90,7 @@ export default function SellOrder(props) {
                     props.closeModal()
                     // get updated number of shares
                     getUserShares()
+                    setEnoughShares(true)
                 } else {
                     console.log("Error creating SALE")
                 }
@@ -108,38 +101,61 @@ export default function SellOrder(props) {
         console.log(userFunds)
     }
 
+    // checks if user has enough shares to sell
+    useEffect(() => {
+        if (quantity > userShares) {
+            setEnoughShares(false)
+        } else {
+            setEnoughShares(true)
+        }
+    }, [quantity, userShares])
+    
+
     return (
         <div>
             <div className="container heading">
                 <h1>SELL ORDER</h1>
                 <h2>{props.companyData.name}</h2>
-                <small>{ticker}</small>
+                <small>{ticker.toUpperCase()}</small>
             </div>
 
             <h3 className='key-data-label'>Price per share:</h3>
-            <p>{props.companyData.price}</p>
+            <p>$ {props.companyData.price}</p>
 
-            <p className='key-data-label'>How many shares?</p>
-            <div className="shares-input-div">
-                <button onClick={handleDecrement}>-</button>
-                <input
-                    type="number"
-                    id="sell-quantity"
-                    value={quantity}
-                    onChange={(e) => setQuantity(parseInt(e.target.value))}
-                />
-                <button onClick={handleIncrement}>+</button>
+            <div className="input-container">
+                <p className='key-data-label'>How many shares?</p>
+                <div className="quantity-container">
+                    <button className="decrement-btn" onClick={handleDecrement}>-</button>
+                    <input
+                        type="number"
+                        id="sell-quantity"
+                        value={quantity}
+                        onChange={(e) => setQuantity(parseInt(e.target.value))}
+                        className="input-field"
+                    />
+                    <button className="increment-btn" onClick={handleIncrement}>+</button>
+                </div>
+                <div className='share-info'>
+                    <p className='key-data-label'>You own:</p>
+                    <p>{userShares} <span className='key-data-label'>shares</span></p>
+                </div>
             </div>
 
+
+
             <h3 className='key-data-label'>Sale Total:</h3>
-            <p>{calculateTotalPrice()}</p>
+            <p>$ {calculateTotalPrice()}</p>
 
             <h4 className='key-data-label'>Funds After Sale:</h4>
             <p>$ {userFunds}</p>
 
-            <div className="btn-div">
-                <button className='btn-modal' onClick={createSellTrade}>SELL NOW</button>
-                <button onClick={() => props.closeModal()}>Cancel</button>
+            <div className="company-btn-div">
+                <button
+                    className={`btn-modal sell-btn ${enoughShares ? '' : 'disabled'}`}
+                    onClick={enoughShares ? createSellTrade : null}>
+                    SELL NOW
+                </button>
+                <button className='btn-modal cancel-btn' onClick={() => props.closeModal()}>Cancel</button>
             </div>
 
         </div>
