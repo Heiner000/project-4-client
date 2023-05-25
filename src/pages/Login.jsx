@@ -9,12 +9,8 @@ export default function Login() {
     const [login, setLogin] = useState(false)
     const [signup, setSignup] = useState(false)
     const [username, setUsername] = useState('')
-    const [userEmail, setUserEmail] = useState('')
     const [userPassword, setUserPassword] = useState('')
     const [zipCode, setZipCode] = useState('')
-    const [error, setError] = useState('')
-    const loginButton = document.querySelector('.login-btn')
-    const signupButton = document.querySelector('.signup-btn')
 
 
     // SIGNUP FUNCTION
