@@ -52,7 +52,8 @@
 
 .chart-div {
     height: 300px;
-    width: 400px;
+    width: 95%;
+    margin: auto;
     overflow-y: auto;
     box-shadow: 0 0 10px rgba(0, 102, 204, 0.3);
     animation: neonGlow 1.5s ease-in-out infinite alternate;
