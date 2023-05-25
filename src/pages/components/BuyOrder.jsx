@@ -9,6 +9,7 @@ export default function BuyOrder(props) {
     const [userFunds, setUserFunds] = useState(0)
     const [userShares, setUserShares] = useState(0)
     const [enoughFunds, setEnoughFunds] = useState(true)
+    const [message, setMessage] = useState({ show: false, text: '', type: '' })
 
     const token = localStorage.getItem('access')
     const decodedToken = jwtDecode(token)
@@ -18,8 +19,8 @@ export default function BuyOrder(props) {
         const getUserFunds = async () => {
             try {
                 const response = await API.get('user_info/', { params: { user_id: userId } })
-                setUserFunds(response.data.funds)
-                console.log(response.data.funds)
+                setUserFunds(parseFloat(response.data.funds).toFixed(2))
+                console.log(parseFloat(response.data.funds).toFixed(2))
             } catch (err) {
                 console.log(err)
             }
@@ -53,6 +54,15 @@ export default function BuyOrder(props) {
         return totalPrice.toFixed(2)
     }
 
+    const handleQuantityChange = (e) => {
+        const value = parseInt(e.target.value);
+        if (isNaN(value)) {
+            setQuantity(0)
+        } else {
+            setQuantity(value);
+        }
+    }
+
     const createBuyTrade = async () => {
         try {
             const tradeData = {
@@ -63,18 +73,27 @@ export default function BuyOrder(props) {
                 price: parseFloat(props.companyData.price),
                 trade_type: 'BUY'
             }
+
+            const totalPrice = parseFloat(calculateTotalPrice())
+            if (totalPrice > userFunds) {
+                setMessage({ show: true, text: 'Insufficient funds to complete this purchase.', type: 'error' })
+                return
+            }
+
             const response = await API.post('trades/', tradeData)
             if (response.status === 201) {
                 console.log("BUY created successfully")
                 console.log('users new shares: ', userShares)
                 // update userFunds with funds from the response
-                setUserFunds(response.data.funds)
+                setUserFunds(parseFloat(response.data.funds).toFixed(2))
+                console.log(parseFloat(response.data.funds).toFixed(2))
                 // close the modal
-                props.closeModal()
+                // props.closeModal()
+                setMessage({ show: true, text: 'Purchase successful!', type: 'success' })
             } else {
                 console.log("Error creating BUY")
+                setMessage({ show: true, text: 'Error making purchase, try again...', type: 'error' })
             }
-
         } catch (err) {
             console.log(err)
         }
@@ -88,6 +107,17 @@ export default function BuyOrder(props) {
             setEnoughFunds(true)
         }
     }, [quantity, userFunds])
+
+    // puts messages on a 2sec timer
+    useEffect(() => {
+        if (message.show) {
+            const timer = setTimeout(() => {
+                setMessage({ show: false, text: '', type: '' })
+            }, 2000)
+            // clear timer when component unmounts
+            return () => clearTimeout(timer)
+        }
+    }, [message])
 
     return (
         <div>
@@ -108,7 +138,7 @@ export default function BuyOrder(props) {
                         type="number"
                         id="buy-quantity"
                         value={quantity}
-                        onChange={(e) => setQuantity(parseInt(e.target.value))}
+                        onChange={handleQuantityChange}
                     />
                     <button className="increment-btn" onClick={handleIncrement}>+</button>
                 </div>
@@ -124,9 +154,15 @@ export default function BuyOrder(props) {
             <h4 className='key-data-label'>Funds Available:</h4>
             <p>$ {userFunds}</p>
 
+            {message.show && (
+                <div className={`message ${message.type}`}>
+                    {message.text}
+                </div>
+            )}
+
             <div className="company-btn-div">
                 <button
-                    className={`btn-modal buy-btn'
+                    className={`btn-modal buy-btn
                     ${enoughFunds ? '' : 'disabled'}`}
                     onClick={enoughFunds ? createBuyTrade : null}                >
                     BUY NOW

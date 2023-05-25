@@ -11,6 +11,7 @@ export default function SellOrder(props) {
     const [userShares, setUserShares] = useState(0)
     const [userFunds, setUserFunds] = useState(0)
     const [enoughShares, setEnoughShares] = useState(true)
+    const [message, setMessage] = useState({ show: false, text: '', type: '' })
 
     // get user's token from local storage and decode it to get their id
     const token = localStorage.getItem('access')
@@ -34,8 +35,8 @@ export default function SellOrder(props) {
             // fetch the user's funds from the API
             const response = await API.get('user_info/', { params: { user_id: userId } })
             // update the userFunds state with the fetched data
-            setUserFunds(response.data.funds)
-            console.log('user funds: ', response.data.funds)
+            setUserFunds(parseFloat(response.data.funds).toFixed(2))
+            console.log('user funds: ', parseFloat(response.data.funds).toFixed(2))
         } catch (err) {
             console.log(err)
         }
@@ -62,8 +63,17 @@ export default function SellOrder(props) {
 
     const calculateTotalPrice = () => {
         let price = parseFloat(props.companyData.price)
-        let totalPrice = price * quantity
+        let totalPrice = parseFloat(price * quantity)
         return totalPrice.toFixed(2)
+    }
+
+    const handleQuantityChange = (e) => {
+        const value = parseInt(e.target.value);
+        if (isNaN(value)) {
+            setQuantity(0)
+        } else {
+            setQuantity(value);
+        }
     }
 
     const createSellTrade = async () => {
@@ -79,20 +89,23 @@ export default function SellOrder(props) {
             // check if user has enough shares to sell
             if (quantity > userShares) {
                 console.log("you don't have enough shares to sell")
+                setMessage({ show: true, text: "You don't have enough shares to sell.", type: 'error' })
                 setEnoughShares(false)
             } else {
                 const response = await API.post('trades/', tradeData)
                 if (response.status === 201) {
                     console.log("Sale made successfully")
+                    setMessage({ show: true, text: 'Sale made successfully!', type: 'success' })
                     // update userFunds with the funds from the response
-                    setUserFunds(response.data.funds)
+                    setUserFunds(parseFloat(response.data.funds).toFixed(2))
                     // Close the modal
-                    props.closeModal()
+                    // props.closeModal()
                     // get updated number of shares
                     getUserShares()
                     setEnoughShares(true)
                 } else {
                     console.log("Error creating SALE")
+                    setMessage({ show: true, text: 'Error creating sale... try again...', type: 'error' })
                 }
             }
         } catch (err) {
@@ -109,7 +122,25 @@ export default function SellOrder(props) {
             setEnoughShares(true)
         }
     }, [quantity, userShares])
-    
+
+    // calculate expected funds from sale
+    const calculateFundsAfterSale = () => {
+        let saleTotal = parseFloat(calculateTotalPrice())
+        let newFunds = parseFloat(userFunds) + parseFloat(saleTotal)
+        return newFunds
+    }
+
+    // puts messages on a 2 sec timer
+    useEffect(() => {
+        if (message.show) {
+            const timer = setTimeout(() => {
+                setMessage({ show: false, text: '', type: '' })
+            }, 2000)
+            // clear timer when component unmounts
+            return () => clearTimeout(timer)
+        }
+    }, [message])
+
 
     return (
         <div>
@@ -130,7 +161,7 @@ export default function SellOrder(props) {
                         type="number"
                         id="sell-quantity"
                         value={quantity}
-                        onChange={(e) => setQuantity(parseInt(e.target.value))}
+                        onChange={handleQuantityChange}
                         className="input-field"
                     />
                     <button className="increment-btn" onClick={handleIncrement}>+</button>
@@ -147,7 +178,13 @@ export default function SellOrder(props) {
             <p>$ {calculateTotalPrice()}</p>
 
             <h4 className='key-data-label'>Funds After Sale:</h4>
-            <p>$ {userFunds}</p>
+            <p>$ {calculateFundsAfterSale()}</p>
+
+            {message.show && (
+                <div className={`message ${message.type}`}>
+                    {message.text}
+                </div>
+            )}
 
             <div className="company-btn-div">
                 <button
