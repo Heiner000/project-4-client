@@ -4,12 +4,16 @@ import API from '../API'
 import './styles/homepage.css'
 import jwtDecode from 'jwt-decode'
 
-export default function HomePage() {
+
+
+
+export default function HomePage({ userFunds, setUserFunds }){
+
 
   const [selectedStock, setSelectedStock] = useState()
   const [watchlist, setWatchlist] = useState()
   const [username, setUsername] = useState('User')
-  const [userFunds, setUserFunds] = useState(0)
+  // const [userFunds, setUserFunds] = useState(0)
   const [userPortfolioShares, setUserPortfolioShares] = useState([])
   const [userPortfolioValues, setUserPortfolioValues] = useState([])
   const [portfolioTotalValue, setPortfolioTotalValue] = useState(0)

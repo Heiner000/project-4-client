@@ -29,16 +29,9 @@ export default function Company() {
           try{
             const response = await API.get('get_watchlist/', {params: {user_id: userId}})
             console.log(response.data)
-            response.data.forEach((info) => {
-                if(info.ticker === ticker){
-                    setWatchlist(true)
-                    console.log('done')
-                    return
-                } else {
-                    setWatchlist(false)
-                    console.log('done')
-                }
-            })
+            const isInWatchlist = response.data.some(info => info.ticker === ticker);
+            setWatchlist(isInWatchlist);
+            console.log('done', isInWatchlist);
           }catch(err){
             console.log(err)
           }

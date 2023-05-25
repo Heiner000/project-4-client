@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom'
 import { FaBars, FaTimes } from 'react-icons/fa'
 import { useState, useEffect, useRef } from 'react'
 import API from '../API'
@@ -6,12 +5,11 @@ import jwtDecode from 'jwt-decode'
 import axios from 'axios'
 import './styles/headers.css'
 
-export default function Header() {
+export default function Header({ userFunds, setUserFunds }) {
 
 
     const [location, setLocation] = useState()
     const [username, setUsername] = useState()
-    const [userFunds, setUserFunds] = useState()
     const [click, setClick] = useState(false)
     const [clickFunds, setClickFunds] = useState(true)
     const handleClick = () => setClick(!click)
@@ -21,9 +19,12 @@ export default function Header() {
     const userId = decodedToken.user_id
     const inputRef = useRef()
 
+    
 
     // GETS THE LOCATION, USERNAME AND FUNDS TO STATE
     useEffect(() => {
+
+        
         const userData = async () => {
             try {
                 const response = await API.get('user_info', { params: { user_id: userId } })
@@ -52,13 +53,18 @@ export default function Header() {
             console.log(data)
             const response = await API.put('update_funds/', data)
             console.log(response)
+            setUserFunds(data.funds)
         }catch(err){
             console.log(err)
         }
     }
 
 
-    
+    const handleLogout = () => {
+        console.log('logged out')
+        localStorage.clear()
+        window.location.href = '/login'
+    }
 
 
     
@@ -97,7 +103,7 @@ export default function Header() {
                         }
 
                     </div>
-                    <div onClick={() => window.location.href = '/login'} className='option-container'>
+                    <div onClick={handleLogout} className='option-container'>
                         <p>Logout</p>
                     </div>
                 </div>
@@ -111,6 +117,7 @@ export default function Header() {
 
                 )}
             </div>
+            
         </div>
     )
 }
