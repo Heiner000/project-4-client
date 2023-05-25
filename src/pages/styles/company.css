@@ -97,6 +97,19 @@
     animation: neonGlow 1.5s ease-in-out infinite alternate;
 }
 
+.remove{
+    text-decoration: underline;
+}
+
+.add{
+    text-decoration: underline;
+}
+
+.more-data{
+    text-decoration: underline;
+    color: #0066cc;
+}
+
 p {
     color: #0066cc;
 }

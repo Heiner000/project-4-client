@@ -86,6 +86,7 @@ export default function HomePage(){
       try{
         const response = await API.get('get_watchlist/', {params: {user_id: userId}})
         setWatchlist(response.data)
+        console.log(response.data)
       }catch(err){
         console.log(err)
       }

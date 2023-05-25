@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef, memo } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useParams } from 'react-router-dom'
 import BuyOrder from './components/BuyOrder'
 import SellOrder from './components/SellOrder'
 import './styles/Modal.css'
 import './styles/company.css'
 import API from '../API'
+import jwtDecode from 'jwt-decode'
 
 export default function Company() {
     const { ticker } = useParams()
@@ -13,8 +14,38 @@ export default function Company() {
     const [showBuyModal, setShowBuyModal] = useState(false)
     const [showSellModal, setShowSellModal] = useState(false)
     const [isMounted, setIsMounted] = useState(false)
+    const [watchlist, setWatchlist] = useState()
+    const [included, setIncluded] = useState()
     const contariner = useRef()
+
+    const token = localStorage.getItem('access')
+    const decodedToken = jwtDecode(token)
+    const userId = decodedToken.user_id
     
+
+
+    useEffect(() => {
+        const getWatchlist = async () => {
+          try{
+            const response = await API.get('get_watchlist/', {params: {user_id: userId}})
+            console.log(response.data)
+            response.data.forEach((info) => {
+                if(info.ticker === ticker){
+                    setWatchlist(true)
+                    console.log('done')
+                    return
+                } else {
+                    setWatchlist(false)
+                    console.log('done')
+                }
+            })
+          }catch(err){
+            console.log(err)
+          }
+        }
+        getWatchlist()
+      }, [included] )
+
 
 
     useEffect(() => {
@@ -108,6 +139,40 @@ export default function Company() {
         return <p>Loading...</p>
     }
 
+
+    const removeWatch = async () => {
+        try{
+            const response = await API.delete(`remove_watchlist/${ticker}/${userId}`)
+            console.log(response.data)
+            setIncluded(false)
+        }catch(err){
+            console.log(err)
+        }
+    }
+
+    const addWatch = async () => {
+        const data = {
+            user_id: userId,
+            new_stock: ticker
+        }
+        try {
+            const response = await API.post('watchlist/', data)
+            if (response.status === 201){
+                console.log("Stock added to watchlist")
+                setWatchlist(true)
+                setIncluded(true)
+            } else {
+              console.log("Unable to add stock to watchlist")
+            }
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    
+
+
+
     return (
         <div className='main-container'>
             
@@ -171,7 +236,22 @@ export default function Company() {
             <hr />
             <p>{marketData[15]['Average Volume']}</p>
 
-            <a href={`https://www.marketwatch.com/investing/stock/${ticker}`} target='_blank'>More data...</a>
+            <a className='more-data' 
+                href={`https://www.marketwatch.com/investing/stock/${ticker}`} target='_blank'>
+                More data
+            </a>
+            { watchlist === true ? (
+                <p className='remove' 
+                    onClick={removeWatch}>
+                    Remove from Watchlist
+                </p>
+            ) : (
+                <p className='add' 
+                    onClick={addWatch}>
+                    Add to Watchlist
+                </p>
+            )}
+            
             </div>    
         </div>
     )
