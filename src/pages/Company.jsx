@@ -12,16 +12,23 @@ export default function Company() {
     const [marketData, setMarketData] = useState([])
     const [showBuyModal, setShowBuyModal] = useState(false)
     const [showSellModal, setShowSellModal] = useState(false)
+    const [isMounted, setIsMounted] = useState(false)
     const contariner = useRef()
+    
 
 
+    useEffect(() => {
+        setTimeout(() => {
+            setIsMounted(true)
+        }, 2000)
+    }, [])
 
-    useEffect(
-        () => {
+    useEffect(() => {
           const script = document.createElement("script");
           script.src = "https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js";
           script.type = "text/javascript";
           script.async = true;
+
           script.innerHTML = `
             {
               "symbols": [
@@ -65,17 +72,12 @@ export default function Company() {
               "timeHoursFormat": "12-hours",
               "color": "rgba(0, 102, 204, 1)"
             }`;
+
             if(contariner.current) {
                 contariner.current.appendChild(script);
             }
 
-            // Cleanup function
-            return () => {
-                if(contariner.current && contariner.current.contains(script)) {
-                    contariner.current.removeChild(script);
-                }
-            }
-        },[ticker]);
+        },[isMounted] );
 
 
 
@@ -107,14 +109,15 @@ export default function Company() {
     }
 
     return (
-        <div>
+        <div className='main-container'>
+            
             <div className="container">
                 <h1>{companyData.name}</h1>
                 <small>{ticker.toUpperCase()}</small>
             </div>
 
             <h2>${companyData.price}</h2>
-
+        <div>
             <div className='chart-div'>
                 <div className="tradingview-widget-container" ref={contariner}>
                     <div className="tradingview-widget-container__widget"></div>
@@ -169,6 +172,7 @@ export default function Company() {
             <p>{marketData[15]['Average Volume']}</p>
 
             <a href={`https://www.marketwatch.com/investing/stock/${ticker}`} target='_blank'>More data...</a>
+            </div>    
         </div>
     )
 }
