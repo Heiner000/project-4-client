@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import API from '../API'
 import jwtDecode from 'jwt-decode'
+import './styles/followers.css'
 
 export default function Followers() {
     const [users, setUsers] = useState([])
@@ -55,11 +56,12 @@ export default function Followers() {
                 console.error('Follow operation failed:', response)
             }
         }
-    } catch (err) {
+        } catch (err) {
         // Log any error that occurs during the follow/unfollow operation
         console.error('Error during follow/unfollow:', err)
+        }
     }
-}
+
 
     return (
         <div>
@@ -75,11 +77,10 @@ export default function Followers() {
             </div>
             <div>
                 {filteredUsers.map((user, i) => (
-                    <div className='' key={`users-${i}`}>
-                        <h2>{user.username}</h2>
-                        <h3>{user.email}</h3>
-                        <p>Stocks: {user.stocks && user.stocks.join(", ")}</p>
-                        <button onClick={() => toggleFollow(user.id)}>
+                    <div className='other-users' key={`users-${i}`}>
+                        <h2 className='user'>{user.username}</h2>
+                        <p className='stocks'>Stocks: {user.stocks && user.stocks.join(", ")}</p>
+                        <button className='follow-button' onClick={() => toggleFollow(user.id)}>
                             { following.includes(user.id) ? 'Unfollow' : 'Follow' }
                         </button>
                     </div>

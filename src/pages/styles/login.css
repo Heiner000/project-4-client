@@ -31,6 +31,8 @@ body{
     border-radius: 2%;
     color: white;
     font-weight: bold;
+    margin: 0 auto;
+    
 }
 .form-container label{
     padding-bottom: 4.5px;
