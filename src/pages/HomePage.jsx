@@ -9,7 +9,6 @@ import jwtDecode from 'jwt-decode'
 
 export default function HomePage({ userFunds, setUserFunds }) {
 
-
   const [selectedStock, setSelectedStock] = useState()
   const [watchlist, setWatchlist] = useState()
   const [username, setUsername] = useState('User')
@@ -66,8 +65,6 @@ export default function HomePage({ userFunds, setUserFunds }) {
   const token = localStorage.getItem('access')
   const decodedToken = jwtDecode(token)
   const userId = decodedToken.user_id
-
-
 
 
   useEffect(() => {
@@ -130,13 +127,9 @@ export default function HomePage({ userFunds, setUserFunds }) {
   }, [userPortfolioShares, userPortfolioValues, portfolioTotalValue, percentageChange]);
 
 
-
   const handleChange = (selectedOption) => {
     setSelectedStock(selectedOption);
   };
-
-
-
 
 
   const addStock = async () => {
@@ -163,9 +156,6 @@ export default function HomePage({ userFunds, setUserFunds }) {
   }
 
 
-
-
-
   const getWatchlist = async () => {
     try {
       const response = await API.get('get_watchlist/', { params: { user_id: userId } })
@@ -174,28 +164,6 @@ export default function HomePage({ userFunds, setUserFunds }) {
       console.log(err)
     }
   }
-
-
-  // const addStock = async () => {
-  //   const data = {
-  //     asset_type: 'stock',
-  //     ticker: 'aapl',
-  //     quantity: 5,
-  //     price: 81.25,
-  //     trade_type: 'buy',
-  //     user_id: 2
-  //   }
-  //   try {
-  //     const response = await axios.post('http://localhost:8000/trades/', data)
-  //     if (response.status === 201){
-  //       console.log("Trade created successfully")
-  //     } else {
-  //       console.log("Unable to create trade")
-  //     }
-  //   } catch (err) {
-  //     console.log(err)
-  //   }
-  // }
 
 
   useEffect(() => {
@@ -210,18 +178,11 @@ export default function HomePage({ userFunds, setUserFunds }) {
     fetchStocks()
   }, [])
 
-  // const fetch_stocks = async () => {
-  //   try{
-  //     const response = await axios.get('http://localhost:8000/view_trades/')
-  //     console.log(response)
-  //   } catch (err) {
-  //     console.log(err)
-  //   }
-  // }
 
   const changeWindow = (ticker) => {
     window.location.href = `company/${ticker}`
   }
+
 
   const displayWatchlist = () => {
     return [...watchlist].reverse().map((stock, i) => {
@@ -233,8 +194,6 @@ export default function HomePage({ userFunds, setUserFunds }) {
       )
     })
   }
-
-
 
 
   const displayPortfolio = () => {
