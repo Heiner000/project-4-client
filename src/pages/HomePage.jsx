@@ -7,7 +7,7 @@ import jwtDecode from 'jwt-decode'
 
 
 
-export default function HomePage({ userFunds, setUserFunds }){
+export default function HomePage({ userFunds, setUserFunds }) {
 
 
   const [selectedStock, setSelectedStock] = useState()
@@ -24,7 +24,7 @@ export default function HomePage({ userFunds, setUserFunds }){
     { value: 'msft', label: 'Microsoft - MSFT' },
     { value: 'amzn', label: 'Amazon - AMZN' },
     { value: 'goog', label: 'Google - GOOG' },
-    { value: 'meta', label: 'Facebook - FB' },
+    { value: 'meta', label: 'Facebook - META' },
     { value: 'tsla', label: 'Tesla - TSLA' },
     { value: 'brk.b', label: 'Berkshire Hathaway - BRK.B' },
     { value: 'v', label: 'Visa - V' },
@@ -114,9 +114,6 @@ export default function HomePage({ userFunds, setUserFunds }){
         setUserPortfolioValues(response.data.portfolio_values)
         setPortfolioTotalValue(response.data.total_portfolio_value)
         setPercentageChange(response.data.unrealized_change_percentage)
-        console.log('UE: portfolio values : ', userPortfolioValues)
-        console.log('UE: portfolio total value : ', portfolioTotalValue)
-        console.log('UE: percentage changes : ', percentageChange)
       } catch (err) {
         console.log(err)
       }
@@ -124,6 +121,14 @@ export default function HomePage({ userFunds, setUserFunds }){
     getUserPortfolioShares()
     getUserPortfolioValues()
   }, [userId])
+  
+  useEffect(() => {
+    console.log('Updated userPortfolio Shares: ', userPortfolioShares);
+    console.log('Updated userPortfolio Values: ', userPortfolioValues);
+    console.log('Updated portfolio Total Value: ', portfolioTotalValue);
+    console.log('Updated percentage Change: ', percentageChange);
+  }, [userPortfolioShares, userPortfolioValues, portfolioTotalValue, percentageChange]);
+
 
 
   const handleChange = (selectedOption) => {
@@ -239,6 +244,16 @@ export default function HomePage({ userFunds, setUserFunds }){
       const ticker = Object.keys(portfolioItem)[0]
       // get the value for that ticker
       const value = portfolioItem[ticker]
+
+      // find the matching shares object
+      const sharesObject = userPortfolioShares.find(item => Object.keys(item)[0] === ticker)
+      // pull out the shares for that ticker
+      const shares = sharesObject ? Object.values(sharesObject)[0] : 0
+
+      // only proceed if the user has 1 or more shares
+      if (shares < 1) {
+        return null
+      }
 
       // find the matching percent change object
       const percentageChangeObject = percentageChange.find(item => Object.keys(item)[0] === ticker)
