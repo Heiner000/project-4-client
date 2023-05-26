@@ -17,6 +17,7 @@ export default function HomePage({ userFunds, setUserFunds }) {
   const [userPortfolioValues, setUserPortfolioValues] = useState([])
   const [portfolioTotalValue, setPortfolioTotalValue] = useState(0)
   const [percentageChange, setPercentageChange] = useState([])
+  const [message, setMessage] = useState({ show: false, text: '', type: '' })
 
   const options = [
     { value: 'aapl', label: 'Apple - AAPL' },
@@ -197,6 +198,16 @@ export default function HomePage({ userFunds, setUserFunds }) {
 
 
   const displayPortfolio = () => {
+    // if portfolio is empty, render a message
+    if (userPortfolioValues.length === 0) {
+      return (
+        <div className='msg-container'>
+            <p>You have no stocks in your portfolio yet.</p>
+            <p>Use the dropdown to add a stock to your watchlist.</p>
+            <p>Then click on a ticker for more details.</p>
+        </div>
+      )
+    }
     // iterate over the userPortfolio state
     return userPortfolioValues.map((portfolioItem, i) => {
       // get each ticker
@@ -229,7 +240,7 @@ export default function HomePage({ userFunds, setUserFunds }) {
   }
 
 
-  if (!userPortfolioValues.length) {
+  if (!userPortfolioValues.length && !watchlist) {
     return <div className='loading'><p>Loading...</p></div>
   }
 

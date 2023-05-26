@@ -114,6 +114,26 @@ h1 {
 .loss {
     color: #ff4d4d;
 }
+
+.loading {
+    margin: 50% 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+}
+
+.msg-container {
+    font-size: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 10px;
+    height: 180px;
+}
+
+.msg-container p {
+    margin: 2%;
+}
+
 @keyframes neonGlow {
     from {
       box-shadow: 0 0 5px rgba(0, 102, 204, 0.5);
