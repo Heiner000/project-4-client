@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import jwtDecode from 'jwt-decode'
 import API from '../API'
 import './styles/portfolio.css'
 
@@ -6,18 +7,26 @@ export default function Portfolio() {
     const [trades, setTrades] = useState([])
     const [searchTerm, setSearchTerm] = useState('')
 
+    const token = localStorage.getItem('access')
+    const decodedToken = jwtDecode(token)
+    const userId = decodedToken.user_id
+
     useEffect(() => {
         const fetchTrades = async () => {
             try {
-                const response = await API.get('view_trades/')
+                const response = await API.get(`user_trade_history/?user_id=${userId}`)
                 setTrades(response.data)
-                console.log('trades: ', trades)
             } catch (err) {
                 console.log(err)
             }
         }
         fetchTrades()
-    }, [])
+    }, [userId])
+    
+
+    useEffect(() => {
+        console.log('trades: ', trades)
+    }, [trades])
 
     const handleChange = (e) => {
         setSearchTerm(e.target.value.toLowerCase())

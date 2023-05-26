@@ -7,8 +7,7 @@ import jwtDecode from 'jwt-decode'
 
 
 
-export default function HomePage({ userFunds, setUserFunds }){
-
+export default function HomePage({ userFunds, setUserFunds }) {
 
   const [selectedStock, setSelectedStock] = useState()
   const [watchlist, setWatchlist] = useState()
@@ -18,13 +17,14 @@ export default function HomePage({ userFunds, setUserFunds }){
   const [userPortfolioValues, setUserPortfolioValues] = useState([])
   const [portfolioTotalValue, setPortfolioTotalValue] = useState(0)
   const [percentageChange, setPercentageChange] = useState([])
+  const [message, setMessage] = useState({ show: false, text: '', type: '' })
 
   const options = [
     { value: 'aapl', label: 'Apple - AAPL' },
     { value: 'msft', label: 'Microsoft - MSFT' },
     { value: 'amzn', label: 'Amazon - AMZN' },
     { value: 'goog', label: 'Google - GOOG' },
-    { value: 'meta', label: 'Facebook - FB' },
+    { value: 'meta', label: 'Facebook - META' },
     { value: 'tsla', label: 'Tesla - TSLA' },
     { value: 'brk.b', label: 'Berkshire Hathaway - BRK.B' },
     { value: 'v', label: 'Visa - V' },
@@ -66,8 +66,6 @@ export default function HomePage({ userFunds, setUserFunds }){
   const token = localStorage.getItem('access')
   const decodedToken = jwtDecode(token)
   const userId = decodedToken.user_id
-
-
 
 
   useEffect(() => {
@@ -114,9 +112,6 @@ export default function HomePage({ userFunds, setUserFunds }){
         setUserPortfolioValues(response.data.portfolio_values)
         setPortfolioTotalValue(response.data.total_portfolio_value)
         setPercentageChange(response.data.unrealized_change_percentage)
-        console.log('UE: portfolio values : ', userPortfolioValues)
-        console.log('UE: portfolio total value : ', portfolioTotalValue)
-        console.log('UE: percentage changes : ', percentageChange)
       } catch (err) {
         console.log(err)
       }
@@ -125,13 +120,17 @@ export default function HomePage({ userFunds, setUserFunds }){
     getUserPortfolioValues()
   }, [userId])
 
+  useEffect(() => {
+    console.log('Updated userPortfolio Shares: ', userPortfolioShares);
+    console.log('Updated userPortfolio Values: ', userPortfolioValues);
+    console.log('Updated portfolio Total Value: ', portfolioTotalValue);
+    console.log('Updated percentage Change: ', percentageChange);
+  }, [userPortfolioShares, userPortfolioValues, portfolioTotalValue, percentageChange]);
+
 
   const handleChange = (selectedOption) => {
     setSelectedStock(selectedOption);
   };
-
-
-
 
 
   const addStock = async () => {
@@ -158,9 +157,6 @@ export default function HomePage({ userFunds, setUserFunds }){
   }
 
 
-
-
-
   const getWatchlist = async () => {
     try {
       const response = await API.get('get_watchlist/', { params: { user_id: userId } })
@@ -169,28 +165,6 @@ export default function HomePage({ userFunds, setUserFunds }){
       console.log(err)
     }
   }
-
-
-  // const addStock = async () => {
-  //   const data = {
-  //     asset_type: 'stock',
-  //     ticker: 'aapl',
-  //     quantity: 5,
-  //     price: 81.25,
-  //     trade_type: 'buy',
-  //     user_id: 2
-  //   }
-  //   try {
-  //     const response = await axios.post('http://localhost:8000/trades/', data)
-  //     if (response.status === 201){
-  //       console.log("Trade created successfully")
-  //     } else {
-  //       console.log("Unable to create trade")
-  //     }
-  //   } catch (err) {
-  //     console.log(err)
-  //   }
-  // }
 
 
   useEffect(() => {
@@ -205,18 +179,11 @@ export default function HomePage({ userFunds, setUserFunds }){
     fetchStocks()
   }, [])
 
-  // const fetch_stocks = async () => {
-  //   try{
-  //     const response = await axios.get('http://localhost:8000/view_trades/')
-  //     console.log(response)
-  //   } catch (err) {
-  //     console.log(err)
-  //   }
-  // }
 
   const changeWindow = (ticker) => {
     window.location.href = `company/${ticker}`
   }
+
 
   const displayWatchlist = () => {
     return [...watchlist].reverse().map((stock, i) => {
@@ -230,15 +197,33 @@ export default function HomePage({ userFunds, setUserFunds }){
   }
 
 
-
-
   const displayPortfolio = () => {
+    // if portfolio is empty, render a message
+    if (userPortfolioValues.length === 0) {
+      return (
+        <div className='msg-container'>
+            <p>You have no stocks in your portfolio yet.</p>
+            <p>Use the dropdown to add a stock to your watchlist.</p>
+            <p>Then click on a ticker for more details.</p>
+        </div>
+      )
+    }
     // iterate over the userPortfolio state
     return userPortfolioValues.map((portfolioItem, i) => {
       // get each ticker
       const ticker = Object.keys(portfolioItem)[0]
       // get the value for that ticker
       const value = portfolioItem[ticker]
+
+      // find the matching shares object
+      const sharesObject = userPortfolioShares.find(item => Object.keys(item)[0] === ticker)
+      // pull out the shares for that ticker
+      const shares = sharesObject ? Object.values(sharesObject)[0] : 0
+
+      // only proceed if the user has 1 or more shares
+      if (shares < 1) {
+        return null
+      }
 
       // find the matching percent change object
       const percentageChangeObject = percentageChange.find(item => Object.keys(item)[0] === ticker)
@@ -255,7 +240,7 @@ export default function HomePage({ userFunds, setUserFunds }){
   }
 
 
-  if (!userPortfolioValues.length) {
+  if (!userPortfolioValues.length && !watchlist) {
     return <div className='loading'><p>Loading...</p></div>
   }
 
@@ -268,7 +253,10 @@ export default function HomePage({ userFunds, setUserFunds }){
       </div>
 
       <div className='outer-portfolio'>
-        <h2>Portfolio:<span className='portfolio'> $ {portfolioTotalValue}</span></h2>
+        <div className="portfolio-div">
+          <h2>Portfolio: </h2>
+          <span className='portfolio-total'>$ {portfolioTotalValue}</span>
+        </div>
         <div className='portfolio-container'>
           {displayPortfolio()}
         </div>
