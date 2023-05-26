@@ -121,7 +121,7 @@ export default function HomePage({ userFunds, setUserFunds }) {
     getUserPortfolioShares()
     getUserPortfolioValues()
   }, [userId])
-  
+
   useEffect(() => {
     console.log('Updated userPortfolio Shares: ', userPortfolioShares);
     console.log('Updated userPortfolio Values: ', userPortfolioValues);
@@ -283,7 +283,10 @@ export default function HomePage({ userFunds, setUserFunds }) {
       </div>
 
       <div className='outer-portfolio'>
-        <h2>Portfolio:<span className='portfolio'> $ {portfolioTotalValue}</span></h2>
+        <div className="portfolio-div">
+          <h2>Portfolio: </h2>
+          <span className='portfolio-total'>$ {portfolioTotalValue}</span>
+        </div>
         <div className='portfolio-container'>
           {displayPortfolio()}
         </div>
