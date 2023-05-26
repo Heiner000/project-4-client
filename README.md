@@ -7,12 +7,40 @@
 * Brian Rogers
 * Garrett Heiner
 
-## Technologies we plan on using
+## Technologies
 * Backend: python, django, postresql
 * Frontend: React, javascript
 * Beautiful Soup -> this will be used for our DIY API. Scraping the stock prices off of MarketWatch will give us real time data for the user.
 * TradingView Plugin -> this allows us to show historical graph data to the user of a specific stock without us having to 
 
+![home](https://i.imgur.com/4PLL5vm.png)
+![company](https://i.imgur.com/gdX1bLD.png)
+![trade history](https://i.imgur.com/8agTl6G.png)
+
+## General Approach
+We approached this project by structuring it as a full stack application, using Django for the backend and React for the frontend. The Django backend is designed as an API that can handle CRUD operations. It's primarily responsible for managing database models, user authentication, and interactions with outside sources.
+
+The frontend, built in React, is a single-page application that provides an interactive user interface. It interacts with the Django backend through API calls using Axios. It also uses jwt-decode for decoding JSON Web Tokens (JWT), react-router-dom for routing, and dotenv to manage environment variables.
+
+We planned to deploy the server on Heroku & the client on Netlify.
+
+## Install Instructions
+* For the server:
+ 1. Clone the server repo & navigate to the project root directory
+ 2. Activate your virtual environment
+ 3. Run `pip install -r requirements.txt` to download dependencies
+
+ * For the client:
+  1. Clone the client repo and navigate to the project root directory
+  2. Run `npm install` to download dependencies
+
+## Problems and Hurdles
+* Managing state between components became a challenge, especially updating the database with rapid changes to our models data, but we doubled down on our API pings, and really took advantage of useEffects and their dependency arrays to update state
+* Finding the best way to scrape the data we needed, and then how to deliver and parse that on the front end
+* Sunk Cost - There were moments where we may have discovered that there might be a better way to calculate or track a specific piece of data, however, it felt like we didn't have enough time to refactor things, because that could start a cascade of dominos before the ship date
+* We realized that not every product is going to ship bug free, and we can always continually tinker with things to improve them
+* Getting the chart plugin to render regularly was a significant hurdle that took a lot of experimenting
+* Understanding and implementing Django's full suite of offerings, like built-in Authorization and Authentication is still a major hurdle
 
 ---
 ## RESTful Routing Chart

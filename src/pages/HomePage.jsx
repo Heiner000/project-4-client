@@ -76,6 +76,7 @@ export default function HomePage({ userFunds, setUserFunds }) {
         setUserFunds(response.data.funds)
       } catch (err) {
         console.log(err)
+        setMessage({ show: true, text: 'Error fetching user data, please reload', type: 'error' })
       }
     }
     getUsername()
@@ -87,9 +88,10 @@ export default function HomePage({ userFunds, setUserFunds }) {
       try {
         const response = await API.get('get_watchlist/', { params: { user_id: userId } })
         setWatchlist(response.data)
-        console.log(response.data)
+        // console.log(response.data)
       } catch (err) {
         console.log(err)
+        setMessage({ show: true, text: 'Error fetching watchlist, please reload', type: 'error' })
       }
     }
     getWatchlist()
@@ -101,9 +103,9 @@ export default function HomePage({ userFunds, setUserFunds }) {
       try {
         const response = await API.get('user_all_shares/', { params: { user_id: userId } })
         setUserPortfolioShares(response.data)
-        console.log('UE getUserPortfolioShares: ', userPortfolioShares)
       } catch (err) {
         console.log(err)
+        setMessage({ show: true, text: 'Error fetching portfolio shares', type: 'error' })
       }
     }
     const getUserPortfolioValues = async () => {
@@ -114,6 +116,7 @@ export default function HomePage({ userFunds, setUserFunds }) {
         setPercentageChange(response.data.unrealized_change_percentage)
       } catch (err) {
         console.log(err)
+        setMessage({ show: true, text: 'Error fetching portfolio values', type: 'error' })
       }
     }
     getUserPortfolioShares()
@@ -147,12 +150,15 @@ export default function HomePage({ userFunds, setUserFunds }) {
       const response = await API.post('watchlist/', data)
       if (response.status === 201) {
         console.log("Stock added to watchlist")
+        setMessage({ show: true, text: 'Stock added to watchlist', type: 'success' })
         getWatchlist()
       } else {
         console.log("Unable to add stock to watchlist")
+        setMessage({ show: true, text: 'Unable to add stock to watchlist', type: 'error' })
       }
     } catch (err) {
       console.log(err)
+      setMessage({ show: true, text: 'Error adding stock to watchlist', type: 'error' })
     }
   }
 
@@ -171,9 +177,10 @@ export default function HomePage({ userFunds, setUserFunds }) {
     const fetchStocks = async () => {
       try {
         const response = await API.get('view_trades/')
-        console.log('all trades', response.data)
+        // console.log('all trades', response.data)
       } catch (err) {
         console.log(err)
+        setMessage({ show: true, text: 'Error fetching trades', type: 'error' })
       }
     }
     fetchStocks()
