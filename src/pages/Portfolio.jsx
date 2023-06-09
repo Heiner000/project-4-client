@@ -14,7 +14,7 @@ export default function Portfolio() {
     useEffect(() => {
         const fetchTrades = async () => {
             try {
-                const response = await API.get(`user_trade_history/?user_id=${userId}`)
+                const response = await API.get(`trade_history/?user_id=${userId}`)
                 setTrades(response.data)
             } catch (err) {
                 console.log(err)
@@ -58,7 +58,7 @@ export default function Portfolio() {
     return (
         <div>
             <div className="container">
-                <h1>Trade History</h1>
+                <h1>Portfolio History</h1>
                 <input
                     type='text'
                     placeholder='Search trades...'

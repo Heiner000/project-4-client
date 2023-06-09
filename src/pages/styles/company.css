@@ -3,6 +3,17 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    /* width: 80%; */
+    margin: 5px 10px;
+}
+
+.key-values-container {
+    width: 90%;
+    /* padding: 0 10px; */
+}
+
+.page-div {
+    width: 100%;
 }
 
 .container {
@@ -23,12 +34,13 @@
 .company-btn-div {
     display: flex;
     justify-content: center;
+    width: 100%;
 }
 
 .company-btn-div button {
     margin: 10px;
     height: 55px;
-    width: 30%;
+    width: 40%;
     font-size: 20px;
 }
 
@@ -90,7 +102,7 @@
 
 .chart-div {
     height: 300px;
-    width: 95%;
+    width: 85%;
     margin: auto;
     overflow-y: auto;
     box-shadow: 0 0 10px rgba(0, 102, 204, 0.3);
@@ -152,7 +164,6 @@ h1 {
     100% {opacity: 0;}
 }
 
-
 @keyframes neonGlow {
     from {
         box-shadow: 0 0 5px rgba(0, 102, 204, 0.5);
@@ -160,6 +171,12 @@ h1 {
 
     to {
         box-shadow: 0 0 15px rgba(0, 102, 204, 0.7);
+    }
+}
+
+@media (max-width: 600px) {
+    .key-values-container {
+        padding: 0 20px;
     }
 }
 

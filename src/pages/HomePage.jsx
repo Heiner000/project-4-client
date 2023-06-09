@@ -173,20 +173,6 @@ export default function HomePage({ userFunds, setUserFunds }) {
   }
 
 
-  useEffect(() => {
-    const fetchStocks = async () => {
-      try {
-        const response = await API.get('view_trades/')
-        // console.log('all trades', response.data)
-      } catch (err) {
-        console.log(err)
-        setMessage({ show: true, text: 'Error fetching trades', type: 'error' })
-      }
-    }
-    fetchStocks()
-  }, [])
-
-
   const changeWindow = (ticker) => {
     window.location.href = `company/${ticker}`
   }

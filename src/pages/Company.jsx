@@ -21,23 +21,23 @@ export default function Company() {
     const token = localStorage.getItem('access')
     const decodedToken = jwtDecode(token)
     const userId = decodedToken.user_id
-    
+
 
 
     useEffect(() => {
         const getWatchlist = async () => {
-          try{
-            const response = await API.get('get_watchlist/', {params: {user_id: userId}})
-            console.log(response.data)
-            const isInWatchlist = response.data.some(info => info.ticker === ticker);
-            setWatchlist(isInWatchlist);
-            console.log('done', isInWatchlist);
-          }catch(err){
-            console.log(err)
-          }
+            try {
+                const response = await API.get('get_watchlist/', { params: { user_id: userId } })
+                console.log(response.data)
+                const isInWatchlist = response.data.some(info => info.ticker === ticker);
+                setWatchlist(isInWatchlist);
+                console.log('done', isInWatchlist);
+            } catch (err) {
+                console.log(err)
+            }
         }
         getWatchlist()
-      }, [included] )
+    }, [included])
 
 
 
@@ -48,12 +48,12 @@ export default function Company() {
     }, [])
 
     useEffect(() => {
-          const script = document.createElement("script");
-          script.src = "https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js";
-          script.type = "text/javascript";
-          script.async = true;
+        const script = document.createElement("script");
+        script.src = "https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js";
+        script.type = "text/javascript";
+        script.async = true;
 
-          script.innerHTML = `
+        script.innerHTML = `
             {
               "symbols": [
                 [
@@ -97,14 +97,12 @@ export default function Company() {
               "color": "rgba(0, 102, 204, 1)"
             }`;
 
-            if(contariner.current) {
-                contariner.current.appendChild(script);
-            }
+        if (contariner.current) {
+            contariner.current.innerHTML = '';
+            contariner.current.appendChild(script);
+        }
 
-        },[isMounted] );
-
-
-
+    }, [isMounted]);
 
     useEffect(() => {
         const fetchCompanyData = async () => {
@@ -134,11 +132,11 @@ export default function Company() {
 
 
     const removeWatch = async () => {
-        try{
+        try {
             const response = await API.delete(`remove_watchlist/${ticker}/${userId}`)
             console.log(response.data)
             setIncluded(false)
-        }catch(err){
+        } catch (err) {
             console.log(err)
         }
     }
@@ -150,102 +148,103 @@ export default function Company() {
         }
         try {
             const response = await API.post('watchlist/', data)
-            if (response.status === 201){
+            if (response.status === 201) {
                 console.log("Stock added to watchlist")
                 setWatchlist(true)
                 setIncluded(true)
             } else {
-              console.log("Unable to add stock to watchlist")
+                console.log("Unable to add stock to watchlist")
             }
         } catch (err) {
             console.log(err)
         }
     }
 
-    
+
 
 
 
     return (
         <div className='main-container'>
-            
+
             <div className="container">
                 <h1>{companyData.name}</h1>
                 <small>{ticker.toUpperCase()}</small>
             </div>
 
             <h2>${companyData.price}</h2>
-        <div>
-            <div className='chart-div'>
-                <div className="tradingview-widget-container" ref={contariner}>
-                    <div className="tradingview-widget-container__widget"></div>
-                    <div className="tradingview-widget-copyright"><a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank"><span className="blue-text">Track all markets</span></a> on TradingView</div>
-                </div>
-            </div>
-
-            <div className="company-btn-div">
-                <button className='btn-modal buy-btn' onClick={() => setShowBuyModal(true)}>BUY</button>
-                <button className='btn-modal sell-btn' onClick={() => setShowSellModal(true)}>SELL</button>
-            </div>
-
-            {showBuyModal ? (
-                <div className="modal">
-                    <div className="overlay">
-                        <div className="modal-content">
-                            <BuyOrder closeModal={() => setShowBuyModal(false)}
-                                companyData={companyData} />
-                        </div>
+            <div className='page-div'>
+                <div className='chart-div'>
+                    <div className="tradingview-widget-container" ref={contariner}>
+                        <div className="tradingview-widget-container__widget"></div>
+                        <div className="tradingview-widget-copyright"><a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank"><span className="blue-text">Track all markets</span></a> on TradingView</div>
                     </div>
                 </div>
-            ) : null}
-            {showSellModal ? (
-                <div className="modal">
-                    <div className="overlay">
-                        <div className="modal-content">
-                            <SellOrder closeModal={() => setShowSellModal(false)}
-                                companyData={companyData} />
+
+                <div className="company-btn-div">
+                    <button className='btn-modal buy-btn' onClick={() => setShowBuyModal(true)}>BUY</button>
+                    <button className='btn-modal sell-btn' onClick={() => setShowSellModal(true)}>SELL</button>
+                </div>
+
+                {showBuyModal ? (
+                    <div className="modal">
+                        <div className="overlay">
+                            <div className="modal-content">
+                                <BuyOrder closeModal={() => setShowBuyModal(false)}
+                                    companyData={companyData} />
+                            </div>
                         </div>
                     </div>
+                ) : null}
+                {showSellModal ? (
+                    <div className="modal">
+                        <div className="overlay">
+                            <div className="modal-content">
+                                <SellOrder closeModal={() => setShowSellModal(false)}
+                                    companyData={companyData} />
+                            </div>
+                        </div>
+                    </div>
+                ) : null}
+
+                <div className="key-values-container">
+                    <p className='key-data-label'>Day Range</p>
+                    <hr />
+                    <p>$ {marketData[1]['Day Range']}</p>
+
+                    <p className='key-data-label'>52 Week Range</p>
+                    <hr />
+                    <p>$ {marketData[2]['52 Week Range']}</p>
+
+                    <p className="key-data-label">Market Cap</p>
+                    <hr />
+                    <p>{marketData[3]['Market Cap']}</p>
+
+                    <p className="key-data-label">Public Float</p>
+                    <hr />
+                    <p>{marketData[5]['Public Float']}</p>
+
+                    <p className="key-data-label">Average Volume</p>
+                    <hr />
+                    <p>{marketData[15]['Average Volume']}</p>
+
+                    <a className='more-data'
+                        href={`https://www.marketwatch.com/investing/stock/${ticker}`} target='_blank'>
+                        More data
+                    </a>
+                    {watchlist === true ? (
+                        <p className='remove'
+                            onClick={removeWatch}>
+                            Remove from Watchlist
+                        </p>
+                    ) : (
+                        <p className='add'
+                            onClick={addWatch}>
+                            Add to Watchlist
+                        </p>
+                    )}
                 </div>
-            ) : null}
-
-            <p className='key-data-label'>Day Range</p>
-            <hr />
-            <p>$ {marketData[1]['Day Range']}</p>
-
-            <p className='key-data-label'>52 Week Range</p>
-            <hr />
-            <p>$ {marketData[2]['52 Week Range']}</p>
-
-            <p className="key-data-label">Market Cap</p>
-            <hr />
-            <p>{marketData[3]['Market Cap']}</p>
-
-            <p className="key-data-label">Public Float</p>
-            <hr />
-            <p>{marketData[5]['Public Float']}</p>
-
-            <p className="key-data-label">Average Volume</p>
-            <hr />
-            <p>{marketData[15]['Average Volume']}</p>
-
-            <a className='more-data' 
-                href={`https://www.marketwatch.com/investing/stock/${ticker}`} target='_blank'>
-                More data
-            </a>
-            { watchlist === true ? (
-                <p className='remove' 
-                    onClick={removeWatch}>
-                    Remove from Watchlist
-                </p>
-            ) : (
-                <p className='add' 
-                    onClick={addWatch}>
-                    Add to Watchlist
-                </p>
-            )}
-            
-            </div>    
+            </div>
         </div>
     )
 }

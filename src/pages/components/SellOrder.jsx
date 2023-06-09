@@ -127,7 +127,7 @@ export default function SellOrder(props) {
     const calculateFundsAfterSale = () => {
         let saleTotal = parseFloat(calculateTotalPrice())
         let newFunds = parseFloat(userFunds) + parseFloat(saleTotal)
-        return newFunds
+        return newFunds.toFixed(2)
     }
 
     // puts messages on a 2 sec timer
