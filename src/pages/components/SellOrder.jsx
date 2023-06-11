@@ -126,8 +126,15 @@ export default function SellOrder(props) {
     // calculate expected funds from sale
     const calculateFundsAfterSale = () => {
         let saleTotal = parseFloat(calculateTotalPrice())
+        // console.log(typeof(saleTotal) + " sale Total : " + saleTotal)
         let newFunds = parseFloat(userFunds) + parseFloat(saleTotal)
-        return newFunds.toFixed(2)
+        // console.log(typeof(newFunds) + " new Funds : " + newFunds)
+        let formattedFunds = newFunds.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        })
+        // console.log(typeof(formattedFunds) + " formatted Funds : " + formattedFunds)
+        return formattedFunds
     }
 
     // puts messages on a 2 sec timer

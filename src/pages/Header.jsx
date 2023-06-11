@@ -7,7 +7,6 @@ import './styles/headers.css'
 
 export default function Header({ userFunds, setUserFunds }) {
 
-
     const [location, setLocation] = useState()
     const [username, setUsername] = useState()
     const [click, setClick] = useState(false)
@@ -19,11 +18,8 @@ export default function Header({ userFunds, setUserFunds }) {
     const userId = decodedToken.user_id
     const inputRef = useRef()
 
-    
-
     // GETS THE LOCATION, USERNAME AND FUNDS TO STATE
     useEffect(() => {
-
         
         const userData = async () => {
             try {
@@ -43,33 +39,28 @@ export default function Header({ userFunds, setUserFunds }) {
         userData()
     }, [clickFunds])
 
-
     const updateFunds = async () => {
         const data = {
             userId,
             funds: inputRef.current.value
         }
         try {
-            console.log(data)
+            // console.log(data)
             const response = await API.put('update_funds/', data)
-            console.log(response)
+            // console.log(response)
             setUserFunds(data.funds)
+            setClick(false)
+            setClickFunds(true)
         }catch(err){
             console.log(err)
         }
     }
-
 
     const handleLogout = () => {
         console.log('logged out')
         localStorage.clear()
         window.location.href = '/login'
     }
-
-
-    
-
-
 
     return (
         <div>
@@ -82,7 +73,7 @@ export default function Header({ userFunds, setUserFunds }) {
 
                 <div className='click-options'>
                     <div onClick={() => window.location.href = '/homepage'} className='option-container'>
-                        <p>Homepage</p>
+                        <p>Home</p>
                     </div>
                     <div onClick={() => window.location.href = '/portfolio'} className='option-container'>
                         <p>History</p>
@@ -92,7 +83,7 @@ export default function Header({ userFunds, setUserFunds }) {
                     </div>
                     <div className='option-container'>
                         { clickFunds ? (
-                            <p onClick={handleClickFunds}>Funds - <span className='fund-span'>${userFunds}</span></p>
+                            <p onClick={handleClickFunds}>Funds - <span className='fund-span'>$ {parseFloat(userFunds).toLocaleString()}</span></p>
                         ) : (
                             <div className='edit-funds'>
                                 <p onClick={handleClickFunds}>Edit Funds:</p>

@@ -242,7 +242,7 @@ export default function HomePage({ userFunds, setUserFunds }) {
       <h1>Hi, {username}</h1>
       <div className='user-funds'>
         <h2>Funds:</h2>
-        <p>$ {userFunds}</p>
+        <p>$ {parseFloat(userFunds).toLocaleString()}</p>
       </div>
 
       <div className='outer-portfolio'>

@@ -152,7 +152,7 @@ export default function BuyOrder(props) {
             <p>$ {calculateTotalPrice()}</p>
 
             <h4 className='key-data-label'>Funds Available:</h4>
-            <p>$ {userFunds}</p>
+            <p>$ {parseFloat(userFunds).toLocaleString()}</p>
 
             {message.show && (
                 <div className={`message ${message.type}`}>
@@ -164,7 +164,7 @@ export default function BuyOrder(props) {
                 <button
                     className={`btn-modal buy-btn
                     ${enoughFunds ? '' : 'disabled'}`}
-                    onClick={enoughFunds ? createBuyTrade : null}                >
+                    onClick={enoughFunds ? createBuyTrade : null} >
                     BUY NOW
                 </button>
                 <button className='btn-modal cancel-btn' onClick={() => props.closeModal()}>Cancel</button>

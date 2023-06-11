@@ -8,6 +8,9 @@ export default function Followers() {
     const [searchTerm, setSearchTerm] = useState('')
     const [filteredUsers, setFilteredUsers] = useState([])
     const [following, setFollowing] = useState([])
+    const [showFollowers, setShowFollowers] = useState(true)
+    const [followers, setFollowers] = useState([])
+    const [actionOccurred, setActionOccurred] = useState(false)
 
     const token = localStorage.getItem('access')
     const decodedToken = jwtDecode(token)
@@ -23,8 +26,24 @@ export default function Followers() {
             }
         }
         fetchUsersAndStocks()
-        console.log(users)
+        console.log('all users : ', users)
     }, [])
+
+    useEffect(() => {
+        const fetchFollowers = async () => {
+            try {
+                const response = await API.get(`followers/${userId}/`)
+                const followerIds = response.data.map(follower => follower.id)
+                setFollowers(response.data)
+                setFollowing(followerIds)
+            } catch (err) {
+                console.log('Error fetching followers: ', err)
+            }
+        }
+        fetchFollowers()
+        console.log('Followers : ', followers)
+        console.log('Following : ', following)
+    }, [actionOccurred])
 
     useEffect(() => {
         setFilteredUsers(users.filter(user =>
@@ -34,31 +53,30 @@ export default function Followers() {
 
     const toggleFollow = async (personToFollowId) => {
         try {
-            // Check if the current user is already following the person in context
-        if (following.includes(personToFollowId)) {
-            // If following, send a DELETE request to unfollow the user
-            const response = await API.delete('unfollow/', { data: {follower_id: userId, followed_id: personToFollowId}})
-            
-            // If the server response indicates a successful unfollow operation, remove this user from our local 'following' state
-            if(response.status === 200){
+            const isFollowing = following.includes(personToFollowId)
+
+            if (isFollowing) {
+                // Unfollow the user
+                const response = await API.delete(`follow/${userId}/${personToFollowId}/`)
+                console.log(response.data)
+
+                // Update the following state
                 setFollowing(following.filter(id => id !== personToFollowId))
             } else {
-                console.error('Unfollow failed:', response)
-            }
-        } else {
-            // If not already following, send a POST request to follow the user
-            const response = await API.post('follow/', { follower_id: userId, followed_id: personToFollowId})
+                // Follow the user
+                const response = await API.post(`follow/${userId}/${personToFollowId}/`)
+                console.log(response.data)
 
-            // If the server response indicates a successful follow operation, add this user to our local 'following' state
-            if(response.status === 200){
+                // Update the following state
                 setFollowing([...following, personToFollowId])
-            } else {
-                console.error('Follow operation failed:', response)
+                console.log('following....: ', following)
             }
-        }
+
+            // Indicate that a follow/unfollow action has occurred
+            setActionOccurred(!actionOccurred)
         } catch (err) {
-        // Log any error that occurs during the follow/unfollow operation
-        console.error('Error during follow/unfollow:', err)
+            // Log any error that occurs during the follow/unfollow operation
+            console.error('Error during follow/unfollow:', err)
         }
     }
 
@@ -67,25 +85,47 @@ export default function Followers() {
         <div>
             <h1>Connect with Traders</h1>
 
-            <div className="container">
-                <input
-                    type="text"
-                    value={searchTerm}
-                    onChange={e => setSearchTerm(e.target.value)}
-                    placeholder="Search usernames..."
-                />
-            </div>
-            <div>
-                {filteredUsers.map((user, i) => (
-                    <div className='other-users' key={`users-${i}`}>
-                        <h2 className='user'>{user.username}</h2>
-                        <p className='stocks'>Stocks: {user.stocks && user.stocks.join(", ")}</p>
-                        <button className='follow-button' onClick={() => toggleFollow(user.id)}>
-                            { following.includes(user.id) ? 'Unfollow' : 'Follow' }
-                        </button>
+            <button onClick={() => setShowFollowers(!showFollowers)}>
+                {showFollowers ? 'Search Users' : 'Show Followers'}
+            </button>
+
+            {showFollowers ? (
+                <div>
+                    <h2>You're Following:</h2>
+                    {followers.map((follower, i) => (
+                        <div key={`follower-${i}`}>
+                            <h3>{follower.username}</h3>
+                            <p>Stocks: {follower.stocks && follower.stocks.join(", ")}</p>
+                            <button className='follow-button' onClick={() => toggleFollow(follower.id)}>
+                                Unfollow
+                            </button>
+                        </div>
+                    ))}
+                </div>
+            ) : (
+                <div>
+                    <h2>Who to Follow:</h2>
+                    <div className="container">
+                        <input
+                            type="text"
+                            value={searchTerm}
+                            onChange={e => setSearchTerm(e.target.value)}
+                            placeholder="Search usernames..."
+                        />
                     </div>
-                ))}
-            </div>
+                    <div>
+                        {filteredUsers.map((user, i) => (
+                            <div className='other-users' key={`users-${i}`}>
+                                <h2 className='user'>{user.username}</h2>
+                                <p className='stocks'>Stocks: {user.stocks && user.stocks.join(", ")}</p>
+                                <button className='follow-button' onClick={() => toggleFollow(user.id)}>
+                                    {following.includes(user.id) ? 'Unfollow' : 'Follow'}
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
         </div>
     )
-}
+}    
