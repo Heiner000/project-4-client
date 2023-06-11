@@ -1,20 +1,45 @@
+p {
+    color: #0066cc;
+}
+
+h1 {
+    color: #0066cc;
+    text-align: center;
+}
+
+h2 {
+    color: #0066cc;
+    margin-left: 0;
+}
+
+h3 {
+    color: white;
+}
+
 .other-users{
     border: 1px solid #0066cc;
     display: flex;
     flex-direction: column;
     margin: 8px 20px;
+    padding: 3px 5px;
 }
 .user{
     padding-left: 10px;
-    margin: 0 0 15px 0;
+    margin: 10px 0 15px 0;
 }
 .stocks{
-    padding-left: 12px;
-    margin: 0px 10px;
-    font-weight: bold;
+    margin: 0px 10px 0 5px;
 }
-.follow-button{
-    width: 80px;
+.stocks-span {
+    margin: 0 0  0 5px;
+}
+
+.follow-button, .show-button{
+    width: auto;
     margin: 15px auto;
     padding: 4px 10px;
+}
+
+.user-search-label {
+    display: none;
 }

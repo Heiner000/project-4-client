@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import API from '../API'
 import jwtDecode from 'jwt-decode'
 import './styles/followers.css'
@@ -85,17 +86,22 @@ export default function Followers() {
         <div>
             <h1>Connect with Traders</h1>
 
-            <button onClick={() => setShowFollowers(!showFollowers)}>
-                {showFollowers ? 'Search Users' : 'Show Followers'}
+            <button className='show-button' onClick={() => setShowFollowers(!showFollowers)}>
+                {showFollowers ? 'Search Users' : 'Show Following'}
             </button>
 
             {showFollowers ? (
                 <div>
                     <h2>You're Following:</h2>
                     {followers.map((follower, i) => (
-                        <div key={`follower-${i}`}>
+                        <div key={`follower-${i}`} className='other-users'>
                             <h3>{follower.username}</h3>
-                            <p>Stocks: {follower.stocks && follower.stocks.join(", ")}</p>
+                            <p className='stocks'>Stocks: {follower.stocks && follower.stocks.slice(0, 4).map((stock, i) =>
+                                <span key={i} className=''>
+                                    <Link style={{ color: 'gold' }} to={`/company/${stock.toUpperCase()}`}> {stock.toUpperCase()}</Link>
+                                    {i < follower.stocks.length - 1 && ', '}
+                                </span>
+                            )}</p>
                             <button className='follow-button' onClick={() => toggleFollow(follower.id)}>
                                 Unfollow
                             </button>
@@ -108,16 +114,25 @@ export default function Followers() {
                     <div className="container">
                         <input
                             type="text"
+                            id='userSearch'
                             value={searchTerm}
                             onChange={e => setSearchTerm(e.target.value)}
                             placeholder="Search usernames..."
                         />
+                        <label className='user-search-label' htmlFor='userSearch'>Search:</label>
                     </div>
                     <div>
                         {filteredUsers.map((user, i) => (
                             <div className='other-users' key={`users-${i}`}>
-                                <h2 className='user'>{user.username}</h2>
-                                <p className='stocks'>Stocks: {user.stocks && user.stocks.join(", ")}</p>
+                                <h3 className='user'>{user.username}</h3>
+                                <p className='stocks'>
+                                    Stocks: 
+                                    <span className='stocks-span'>
+                                        {user.stocks && user.stocks.length > 0
+                                            ? user.stocks.slice(0, 4).map(stock => stock.toUpperCase()).join(", ")
+                                            : " No shares owned right now"}
+                                    </span>
+                                </p>
                                 <button className='follow-button' onClick={() => toggleFollow(user.id)}>
                                     {following.includes(user.id) ? 'Unfollow' : 'Follow'}
                                 </button>
