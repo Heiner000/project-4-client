@@ -3,7 +3,6 @@ import axios from 'axios'
 import './styles/login.css'
 import API from '../API'
 
-
 export default function Login() {
 
     const [login, setLogin] = useState(false)
@@ -11,7 +10,6 @@ export default function Login() {
     const [username, setUsername] = useState('')
     const [userPassword, setUserPassword] = useState('')
     const [zipCode, setZipCode] = useState('')
-
 
     // SIGNUP FUNCTION
     const handleSignup = async (e) => {
@@ -21,16 +19,15 @@ export default function Login() {
             password: userPassword,
             zip_code: zipCode,
         }
-            const response = await API.post('register/', user)
-            console.log(response.data.access)
-            localStorage.clear()
-            localStorage.setItem('access', response.data.access)
-            localStorage.setItem('refresh', response.data.refresh)
-            console.log(localStorage)
-            window.location.href = '/homepage'
-            
-    }
+        const response = await API.post('register/', user)
+        console.log(response.data.access)
+        localStorage.clear()
+        localStorage.setItem('access', response.data.access)
+        localStorage.setItem('refresh', response.data.refresh)
+        console.log(localStorage)
+        window.location.href = '/homepage'
 
+    }
 
     // LOGIN FUNCTION
     const handleLogin = async (e) => {
@@ -39,19 +36,18 @@ export default function Login() {
             username: username,
             password: userPassword
         }
-        const {data} = await API.post('token/', user,
-        {
-            headers: {'Content-Type': 'application/json'}
-        })
+        const { data } = await API.post('token/', user,
+            {
+                headers: { 'Content-Type': 'application/json' }
+            })
         console.log(data)
         localStorage.clear()
         localStorage.setItem('access', data.access)
         localStorage.setItem('refresh', data.refresh)
         axios.defaults.headers.common['Authorization'] = `Bearer ${data['access']}`
         window.location.href = '/homepage'
-        
-    }
 
+    }
 
     // RENDERS LOGIN/SIGNUP FORMS
     const loginClick = () => {
@@ -68,12 +64,10 @@ export default function Login() {
         // Remove the tokens from local storage
         localStorage.removeItem('access')
         localStorage.removeItem('refresh')
-      
+
         // Update state 
         setLogin(false)
-      }
-      
-
+    }
 
     return (
         <div className='main-landing'>
@@ -83,8 +77,8 @@ export default function Login() {
             </div>
 
             <div className='btn-div'>
-                <button className='login-btn' onClick={() => loginClick()}>Log In</button>
-                <button className='signup-btn' onClick={() => signupClick()}>Sign Up</button>
+                <button className={`login-btn ${login ? 'active-btn' : ''}`} onClick={() => loginClick()}>Log In</button>
+                <button className={`signup-btn ${signup ? 'active-btn' : ''}`} onClick={() => signupClick()}>Sign Up</button>
             </div>
 
             {signup ?
@@ -105,7 +99,7 @@ export default function Login() {
                     <input type='text' name='zipCode'
                         onChange={(e) => setZipCode(e.target.value)} placeholder='Zip Code'></input>
 
-                    <input className='btn' type="submit" value="Signup" />
+                    <input className='btn' type="submit" value="S I G N  U P" />
 
                 </form>
 
@@ -116,14 +110,14 @@ export default function Login() {
                     <label>Username</label>
                     <input type='text' value={username}
                         onChange={(e) => setUsername(e.target.value)}
-                        placeholder='username'></input>
+                        placeholder='Enter Username'></input>
 
                     <label>Password</label>
                     <input type='password' value={userPassword}
                         onChange={(e) => setUserPassword(e.target.value)}
-                        placeholder='password'></input>
+                        placeholder='Enter Password'></input>
 
-                    <input className='btn' type="submit" value='Login' />
+                    <input className='btn' type="submit" value='L O G I N' />
 
                 </form>
             }

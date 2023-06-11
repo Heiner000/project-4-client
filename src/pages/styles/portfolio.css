@@ -44,3 +44,13 @@
 .date {
     font-size: .75rem;
 }
+
+.winner {
+    color: #00cc66;
+    padding-left: 5px;
+}
+
+.loser {
+    color: #ff4d4d;
+    padding-left: 5px;
+}

@@ -6,6 +6,7 @@ import './styles/portfolio.css'
 export default function Portfolio() {
     const [trades, setTrades] = useState([])
     const [searchTerm, setSearchTerm] = useState('')
+    const [portfolioGain, setPortfolioGain] = useState('')
 
     const token = localStorage.getItem('access')
     const decodedToken = jwtDecode(token)
@@ -20,13 +21,23 @@ export default function Portfolio() {
                 console.log(err)
             }
         }
+        const fetchPortfolioGain = async () => {
+            try {
+                const response = await API.get('user_portfolio_values/', { params: { user_id: userId } })
+                setPortfolioGain(response.data.total_portfolio_gain_percentage)
+            } catch (err) {
+                console.log(err)
+            }
+        }
         fetchTrades()
+        fetchPortfolioGain()
     }, [userId])
     
 
     useEffect(() => {
         console.log('trades: ', trades)
-    }, [trades])
+        console.log('portfolio gain: ', portfolioGain)
+    }, [trades, portfolioGain])
 
     const handleChange = (e) => {
         setSearchTerm(e.target.value.toLowerCase())
@@ -59,8 +70,12 @@ export default function Portfolio() {
         <div>
             <div className="container">
                 <h1>Portfolio History</h1>
+                <h3>Overall Return:
+                { parseFloat(portfolioGain) > 0 ? <span className='winner'>{portfolioGain} gain!</span> : <span className='loser'>{portfolioGain} loss...</span> }</h3>
+                <label htmlFor='searchTrades' value="search Trades" />
                 <input
                     type='text'
+                    id='searchTrades'
                     placeholder='Search trades...'
                     value={searchTerm}
                     onChange={handleChange}
