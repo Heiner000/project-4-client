@@ -99,7 +99,7 @@ export default function Login() {
                     <input type='text' name='zipCode'
                         onChange={(e) => setZipCode(e.target.value)} placeholder='Zip Code'></input>
 
-                    <input className='btn' type="submit" value="S I G N  U P" />
+                    <input className='btn' id='btn' type="submit" value="S I G N  U P" />
 
                 </form>
 
@@ -117,7 +117,7 @@ export default function Login() {
                         onChange={(e) => setUserPassword(e.target.value)}
                         placeholder='Enter Password'></input>
 
-                    <input className='btn' type="submit" value='L O G I N' />
+                    <input className='btn' id='btn' type="submit" value='L O G I N' />
 
                 </form>
             }
